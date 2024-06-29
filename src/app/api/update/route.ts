@@ -9,11 +9,11 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { noteId, title, content } = await req.json();
+  const { noteId, title } = await req.json();
   const userId = session.user.id;
 
   // Validate input
-  if (!noteId || !title || !content) {
+  if (!noteId || !title) {
     return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
   }
 
@@ -31,7 +31,7 @@ export const POST = async (req: Request) => {
   // Update the note
   await sqliteDb
     .update(note)
-    .set({ title, content, updatedAt: Date.now() })
+    .set({ title, updatedAt: Date.now() })
     .where(eq(note.id, Number(noteId)));
 
   return NextResponse.json({ message: 'Note updated successfully' }, { status: 200 });

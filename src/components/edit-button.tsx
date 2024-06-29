@@ -17,7 +17,6 @@ export default function EditButtons({ noteContent, noteId }: EditButtonsProps) {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [title, setTitle] = useState(noteContent.title);
-  const [content, setContent] = useState(noteContent.content);
 
   const handleDelete = async () => {
     setLoading(true);
@@ -57,7 +56,7 @@ export default function EditButtons({ noteContent, noteId }: EditButtonsProps) {
     try {
       const response = await fetch('/api/update', {
         method: 'POST',
-        body: JSON.stringify({ noteId, title, content }),
+        body: JSON.stringify({ noteId,title }),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -94,20 +93,13 @@ export default function EditButtons({ noteContent, noteId }: EditButtonsProps) {
             <DialogTitle>Edit Note</DialogTitle>
             <DialogDescription>Edit the title and content of your note.</DialogDescription>
           </DialogHeader>
-          <div className="flex min-w-xs gap-2">
+          <div className="min-w-xs gap-2">
             <Textarea
-              className="w-[300px] h-[300px]"
-              placeholder="Title"
+              className="w-full h-[420px]"
+              placeholder="Reply"
               defaultValue={noteContent.title}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-            />
-            <Textarea
-              className="w-full h-[320px]"
-              placeholder="Content"
-              defaultValue={noteContent.content}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
             />
           </div>
           <DialogFooter>
