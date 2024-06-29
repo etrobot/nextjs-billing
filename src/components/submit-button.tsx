@@ -26,3 +26,5 @@ export const SubmitButton = forwardRef<ButtonElement, ButtonProps>(
     );
   },
 );
+
+SubmitButton.displayName = "SubmitButton";
