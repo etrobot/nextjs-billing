@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion -- checked in configureLemonSqueezy() */
 "use server";
 
 import crypto from "node:crypto";
@@ -405,7 +404,7 @@ export async function processWebhookEvent(webhookEvent: NewWebhookEvent) {
  */
 export async function getUserSubscriptions() {
   const session = await auth();
-  const userId = session?.user?.id;
+  const userId = session?.user.id;
 
   if (!userId) {
     notFound();

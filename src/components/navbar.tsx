@@ -1,16 +1,32 @@
+'use client'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { Button } from '@/components/ui/button'
+import { UserIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react';
 
 export default function Navbar() {
-    return(
-    <div className="md:sticky md:top-0 md:z-50 md:flex md:items-center md:justify-between md:w-full md:h-12 md:p-2 md:shrink-0 md:bg-gradient-to-b md:from-background/10 md:via-background/50 md:to-background/80 md:backdrop-blur-xl fixed bottom-0 z-50 w-full bg-gradient-to-t from-background/10 via-background/50 to-background/80 p-2 backdrop-blur-xl flex items-center justify-between">
-    <ThemeToggle />
-    <nav className='max-w-xs mx-auto flex gap-4'>
-        <Link href='/'>HOME</Link>
-        <Link href='/'>FAVOR</Link>
-        <Link href='/'>WORKS</Link>
-        <Link href='/profile'>MY</Link>
-    </nav>
-    </div>
-    )
+    const { data: session } = useSession();
+
+    return (
+        <div className="md:sticky md:top-0 md:z-50 md:flex md:items-center md:justify-between md:w-full md:h-12 md:p-2 md:shrink-0 fixed bottom-0 z-50 w-full p-2 flex items-center justify-between bg-background bg-opacity-80">
+            <ThemeToggle />
+            <nav className='max-w-xs mx-auto flex gap-4'>
+                <Link href='/'>Home</Link>
+                {session && (
+                    <>
+                        <Link href='/favor'>Favorites</Link>
+                        <Link href='/work'>Works</Link>
+                    </>
+                )}
+                <Link href='/pricing'>Pricing</Link>
+            </nav>
+
+            <Link href='/profile'>
+                <Button variant="ghost" size="icon">
+                    <UserIcon className='w-6 h-6' />
+                </Button>
+            </Link>
+        </div>
+    );
 }

@@ -41,7 +41,7 @@ export const SignupButton = forwardRef<ButtonElement, ButtonProps>(
       ? "Your plan"
       : isChangingPlans
         ? "Switch to this plan"
-        : "Sign up";
+        : "Choose Plan";
 
     // Make sure Lemon.js is loaded
     useEffect(() => {
@@ -108,3 +108,5 @@ export const SignupButton = forwardRef<ButtonElement, ButtonProps>(
     );
   },
 );
+
+SignupButton.displayName = 'SignupButton';
