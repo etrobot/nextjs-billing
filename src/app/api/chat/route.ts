@@ -12,9 +12,15 @@ import {
 } from "@/db/schema";
 export const runtime = 'edge';
 
+//random keys
+const llmkeys= process.env.LLM_API_KEY?.split(',');
+var llmkey='';
+if(llmkeys){
+  llmkey=llmkeys[Math.floor(Math.random() * llmkeys.length)];
+}
 const openai = new OpenAI({
   baseURL: process.env.API_BASE_URL,
-  apiKey: process.env.LLM_API_KEY
+  apiKey: llmkey
 });
 
 export async function POST(req: Request) {
