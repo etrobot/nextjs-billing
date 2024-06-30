@@ -9,6 +9,8 @@ import Image from "next/image";
 export const metadata: Metadata = {
   title: "Inspilot",
 };
+import { GoogleTagManager } from '@next/third-parties/google'
+
 
 export const viewport = {
   themeColor: [
@@ -26,6 +28,7 @@ export default function RootLayout({
 }: RootLayoutProps) {
   return (
     <html lang="en">
+      <GoogleTagManager gtmId={process.env.GTM_ID!} />
       <body>
         <SessionProvider>
           <Providers
