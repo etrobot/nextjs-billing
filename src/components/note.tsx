@@ -22,7 +22,7 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
   const { messages, append, reload, stop, isLoading, input, setInput } = useChat({
     initialMessages: [{
       id: nanoid(),
-      role: 'user',
+      role: 'system',
       content: `『@${noteContent.authorId}:\n`+noteContent.content+'』\n\n'+'make a short reply on the tweet above'
     },{
       id: nanoid(),
@@ -65,9 +65,10 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
       </div>
       <div className="sm:w-full md:w-[420px]">
         <div className='p-4  mb-16'>
-        {messages.slice(1,messages.length).map((message, index) => (
+        {messages.map((message, index) => (
+          message.role !== 'system' && 
           <div className='w-full flex'  key={index}>
-          <span className={` ${message.role === 'user' ? 'ml-auto bg-gray-300 rounded-md mb-2 ml-auto p-2' : ''}`}>
+          <span className={` ${message.role === 'user' ? 'ml-auto bg-gray-300 rounded-md my-2 ml-auto py-1 px-3' : ''}`}>
             {message.role === 'assistant' && '🤖: '} {message.content}
             </span>
           </div>
