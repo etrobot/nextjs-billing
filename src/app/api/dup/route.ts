@@ -25,7 +25,6 @@ export const POST = async (req: Request) => {
   const newNoteData = {
     ...existingNote[0],
     userId: userId,
-    createdAt: Date.now(),
     updatedAt: Date.now(),
   };
 

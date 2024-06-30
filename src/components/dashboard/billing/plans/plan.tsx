@@ -46,7 +46,7 @@ export function Plan({
         </div>
 
         <SignupButton
-          className="w-full"
+          className="w-full text-white"
           plan={plan}
           isChangingPlans={isChangingPlans}
           currentPlan={currentPlan}

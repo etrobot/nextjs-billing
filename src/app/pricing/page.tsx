@@ -96,7 +96,7 @@ const PlansPage: React.FC = () => {
                     </Link>
                   ) : (
                     <SignupButton
-                      className="w-full"
+                      className="w-full text-white"
                       plan={plan}
                       isChangingPlans={false}
                     />

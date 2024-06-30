@@ -3,10 +3,10 @@ import { sqliteDb, category } from '@/db/schema-sqlite';
 
 export const GET = async (req: Request) => {
   const cates = await sqliteDb
-    .select({ categoryName: category.category })
+    .select()
     .from(category);
 
-  const categoryNames = cates.map(cate => cate.categoryName);
+  const categoryNames = cates.map(cate => cate.category);
 
   return NextResponse.json(categoryNames, { status: 200 });
 };
