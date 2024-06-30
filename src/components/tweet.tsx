@@ -13,7 +13,7 @@ interface ArticleCardProps {
 
 const Tweet: React.FC<ArticleCardProps> = ({ css, authorId, createdAt, content, length }) => {
   return (
-    <div className='opacity-88 p-4 bg-gray-400 bg-opacity-10 rounded-sm max-w-full'>
+    <div className='opacity-88 p-4 bg-gray-400 bg-opacity-10 rounded-sm md:max-w-full'>
       <div className="flex items-start justify-between w-full">
         <div className="flex items-start gap-2">
           <Image
