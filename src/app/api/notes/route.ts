@@ -51,6 +51,7 @@ export const GET = async (req: Request) => {
         id: note.id,
         userId: note.userId,
         title: note.title,
+        category: note.category,
         css: note.css,
         createdAt: note.createdAt,
         useCount: note.usedcount,
@@ -73,7 +74,7 @@ export const GET = async (req: Request) => {
         useCount: article.useCount ?? 0,
         link: '', // Add the link property with appropriate value
         userId: article.userId, // Add the userId property with appropriate value
-        category: category ?? '', // Add the category property with appropriate value
+        category: article.category, // Add the category property with appropriate value
         tags: '',
         dark: 0,
         textalign: 0,//0:left,1:middle,2:right

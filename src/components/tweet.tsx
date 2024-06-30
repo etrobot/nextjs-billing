@@ -9,11 +9,12 @@ interface ArticleCardProps {
   createdAt: string;
   content: string;
   length: number;
+  cate: string
 }
 
-const Tweet: React.FC<ArticleCardProps> = ({ css, authorId, createdAt, content, length }) => {
+const Tweet: React.FC<ArticleCardProps> = ({ css, authorId, createdAt, content, length,cate }) => {
   return (
-    <div className='opacity-88 p-4 bg-gray-400 bg-opacity-10 rounded-sm md:max-w-full'>
+    <div className='opacity-88 p-3 bg-gray-400 bg-opacity-10 rounded-sm md:max-w-full'>
       <div className="flex items-start justify-between w-full">
         <div className="flex items-start gap-2">
           <img
@@ -26,7 +27,8 @@ const Tweet: React.FC<ArticleCardProps> = ({ css, authorId, createdAt, content, 
           <div className="flex flex-col items-start">
             <p>@{authorId}</p>
             <p className="text-muted-foreground text-xs">
-              {createdAt ? `${(new Date(+createdAt * 1000)).toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })}` : ''}
+              {createdAt ? `${(new Date(+createdAt * 1000)).toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })} / ` : ''}
+               {cate}
             </p>
           </div>
         </div>

@@ -98,7 +98,7 @@ function Notes({ param }: { param?: string }) {
               onClick={() => handleArticleClick(article.id?.toString() ?? '')}>
               <div className="border border-slate/10 rounded-lg p-4 flex flex-col items-start gap-3 h-fit">
                 🤖:  {article.title}
-                <Tweet length={210} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''}/>              </div>
+                <Tweet cate={article.category} length={210} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''}/>              </div>
             </div>
           ))}
         </div>
