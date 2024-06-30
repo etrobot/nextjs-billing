@@ -16,7 +16,7 @@ const Tweet: React.FC<ArticleCardProps> = ({ css, authorId, createdAt, content, 
     <div className='opacity-88 p-4 bg-gray-400 bg-opacity-10 rounded-sm md:max-w-full'>
       <div className="flex items-start justify-between w-full">
         <div className="flex items-start gap-2">
-          <Image
+          <img
             src={'https://pbs.twimg.com/profile_images/' + css}
             alt="maker"
             height={40}
