@@ -16,7 +16,7 @@ export default function Navbar() {
                 {session && (
                     <>
                         <Link href='/favor'>Favorites</Link>
-                        <Link href='/work'>Works</Link>
+                        <Link href='/user'>Mine</Link>
                     </>
                 )}
                 <Link href='/pricing'>Pricing</Link>

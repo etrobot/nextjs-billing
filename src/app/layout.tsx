@@ -5,7 +5,7 @@ import "./globals.css";
 import { Providers } from '@/components/providers';
 import { SessionProvider } from 'next-auth/react';
 import Navbar from '@/components/navbar';
-
+import Image from "next/image";
 export const metadata: Metadata = {
   title: "Inspilot",
 };
@@ -35,6 +35,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Navbar />
+            <Image src="/icon.png" alt="Icon" width={56} height={56} className="mx-auto my-4"/>
             {children}
           </Providers>
         </SessionProvider>

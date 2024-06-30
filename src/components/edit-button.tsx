@@ -37,7 +37,7 @@ export default function EditButtons({ noteContent, noteId }: EditButtonsProps) {
         if (nextNoteId) {
           router.push(`/note/${nextNoteId}`);
         } else {
-          router.push('/works'); // Redirect to the notes list if there is no next note
+          router.push('/user'); // Redirect to the notes list if there is no next note
         }
       } else {
         // Handle error
