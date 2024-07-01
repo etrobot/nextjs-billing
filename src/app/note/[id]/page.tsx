@@ -94,7 +94,7 @@ export default async function NotePage({ params }: Props) {
       {previousNoteId && (
         <Link href={`/note/${previousNoteId}`}>
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
             className="fixed z-99 left-2 top-1/2 transform -translate-y-1/2 md:ml-20"
           >
@@ -109,7 +109,7 @@ export default async function NotePage({ params }: Props) {
       {nextNoteId && (
         <Link href={`/note/${nextNoteId}`}>
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
             className="fixed z-99 right-2 top-1/2 transform -translate-y-1/2 md:mr-20"
           >

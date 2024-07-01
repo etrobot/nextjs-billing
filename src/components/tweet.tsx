@@ -2,9 +2,11 @@
 import React from 'react';
 import Image from 'next/image';
 import { TwitterX } from '@/components/icons/social';
+import Link from 'next/link';
 
 interface ArticleCardProps {
   css: string;
+  noteId: string;
   authorId: string;
   createdAt: string;
   content: string;
@@ -12,9 +14,10 @@ interface ArticleCardProps {
   cate: string
 }
 
-const Tweet: React.FC<ArticleCardProps> = ({ css, authorId, createdAt, content, length,cate }) => {
+const Tweet: React.FC<ArticleCardProps> = ({ css,noteId, authorId, createdAt, content, length,cate }) => {
   return (
     <div className='opacity-88 p-3 bg-gray-400 bg-opacity-10 rounded-sm md:max-w-full'>
+      <Link href={`/?authorId=${authorId}`}>
       <div className="flex items-start justify-between w-full">
         <div className="flex items-start gap-2">
           <img
@@ -34,8 +37,11 @@ const Tweet: React.FC<ArticleCardProps> = ({ css, authorId, createdAt, content, 
         </div>
         <TwitterX className="w-6 h-6 opacity-50" />
       </div>
+      </Link>
       <div className="content-container break-words">
+        <Link href={`/note/${noteId}`}>
         {content.substring(0, length)} {content.length > length ? '...' : ''}
+        </Link>
       </div>
     </div>
   );

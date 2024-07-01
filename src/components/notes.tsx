@@ -20,10 +20,11 @@ function Notes({ param }: { param?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = searchParams?.get('category') ?? '';
+  const authorId = searchParams?.get('authorId') ?? '';
 
   const fetchArticles = useCallback(async (cursor: string | undefined = undefined, category: string = '') => {
     try {
-      const res = await fetch(`/api/notes?${cursor ? `startCursor=${cursor}&` : ''}pageSize=10${category ? `&category=${category}` : ''}${userId && param ? `&${param}Id=${userId}` : ''}`);
+      const res = await fetch(`/api/notes?${cursor ? `startCursor=${cursor}&` : ''}pageSize=16${category ? `&category=${category}` : ''}${userId && param ? `&${param}Id=${userId}` : ''}${authorId ? `&authorId=${authorId}` : ''}`);
       const data: { articles: Article[]; nextCursor: string; hasMore: boolean } = await res.json();
       setArticles(prev => {
         const newArticles = data.articles?.filter(article => !prev.some(a => a.id === article.id));
@@ -94,11 +95,10 @@ function Notes({ param }: { param?: string }) {
       <div className="flex flex-col justify-center items-center pt-4 gap-12 w-full ">
         <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 max-w-7xl mx-auto overflow-hidden relative transition-all">
           {articles.map((article) => (
-            <div className="mb-4 z-0 break-inside-avoid-column cursor-pointer" key={article.id}
-              onClick={() => handleArticleClick(article.id?.toString() ?? '')}>
+            <div className="mb-4 z-0 break-inside-avoid-column " key={article.id}>
               <div className="border border-slate/10 rounded-lg p-4 flex flex-col items-start gap-3 h-fit">
-                🤖:  {article.title}
-                <Tweet cate={article.category} length={210} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''}/>              </div>
+                <div className='cursor-pointer'onClick={() => handleArticleClick(article.id?.toString() ?? '')}>🤖:  {article.title}</div>
+                <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={210} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''}/>              </div>
             </div>
           ))}
         </div>

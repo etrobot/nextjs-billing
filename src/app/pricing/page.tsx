@@ -36,9 +36,9 @@ const PlansPage: React.FC = () => {
       <h1 className='background-image py-6 font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-center text-white mx-auto'>
         Pricing
       </h1>
-      <div className="w-full md:flex justify-center gap-4 p-8 bg-svg">
+      <div className="md:flex justify-center gap-4 p-8 bg-svg">
         <Card
-                className="w-[360px]"
+                className="md:w-[360px] w-full mb-4"
               >
                 <CardHeader>
                   <CardTitle>Starter</CardTitle>
@@ -68,7 +68,7 @@ const PlansPage: React.FC = () => {
           {sortedPlans.map((plan, index) => (
             <div key={`plan-${index}`}>
               <Card
-                className="w-[360px]"
+                className="md:w-[360px] w-full"
                 key={plan.id}
                 data-productid={plan.id}
                 data-variantid={plan.id}

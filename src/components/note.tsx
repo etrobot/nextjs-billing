@@ -61,7 +61,7 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
   return (
     <article className="md:flex sm:w-full mx-auto max-w-3xl justify-center border md:border-slate/10 md:rounded-lg md:p-6">
       <div className="md:w-[360px] sm:w-full">
-        <Tweet cate={noteContent.category} length={999} css={noteContent.css ?? ''} authorId={noteContent.authorId} content={noteContent.content} createdAt={noteContent.createdAt?.toString() ?? ''} />
+        <Tweet noteId={noteContent.id?.toString() ?? ''} cate={noteContent.category} length={999} css={noteContent.css ?? ''} authorId={noteContent.authorId} content={noteContent.content} createdAt={noteContent.createdAt?.toString() ?? ''} />
       </div>
       <div className="sm:w-full md:w-[420px]">
         <div className='p-4  mb-16'>

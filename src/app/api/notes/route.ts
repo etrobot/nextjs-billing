@@ -10,6 +10,7 @@ export const GET = async (req: Request) => {
   const category = searchParams.get('category');
   const favorId = searchParams.get('favorId');
   const userId = searchParams.get('userId') ?? '987654321';
+  const authorId = searchParams.get('authorId');
   
   try {
     // Base conditions
@@ -18,6 +19,11 @@ export const GET = async (req: Request) => {
     // Add category condition if category parameter is present
     if (category) {
       conditions.push(eq(note.category, category));
+    }
+
+    if (authorId) {
+      console.log(authorId);
+      conditions.push(eq(note.authorId, authorId));
     }
 
     let articleIds: number[] = [];

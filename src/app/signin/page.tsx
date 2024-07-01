@@ -10,7 +10,7 @@ export default async function SignInPage() {
       redirect('/profile')
     }
     return (
-      <div className="flex h-[calc(100vh-theme(spacing.12))] items-center justify-center py-10">
+      <div className="flex h-[calc(80vh-theme(spacing.20))] items-center justify-center py-10">
         <LoginButtons/>
       </div>
     )
