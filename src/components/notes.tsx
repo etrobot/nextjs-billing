@@ -93,13 +93,14 @@ function Notes({ param }: { param?: string }) {
           </Button>
         ))}
       </div>
-      <div className="flex flex-col justify-center items-center pt-4 gap-12 w-full ">
-        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 max-w-7xl mx-auto overflow-hidden relative transition-all">
+      <div className="flex flex-col justify-center items-center p-4 gap-12 w-full">
+        <div className="max-w-4xl sm:columns-1 md:columns-2 gap-4 mx-auto overflow-hidden relative transition-all">
           {articles.map((article) => (
-            <div className="mb-4 z-0 break-inside-avoid-column " key={article.id}>
+            <div className="mb-4 z-0 break-inside-avoid-column sm:w-full min-w-sm" key={article.id}>
               <div className="border border-slate/10 rounded-lg p-4 flex flex-col items-start gap-3 h-fit">
                 <div className='cursor-pointer'onClick={() => handleArticleClick(article.id?.toString() ?? '')}>🤖:  {article.title}</div>
-                <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={210} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''}/>              </div>
+                <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={280} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''}/>
+                </div>
             </div>
           ))}
         </div>
