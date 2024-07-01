@@ -42,13 +42,6 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
     },
   });
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(noteContent.title).then(() => {
-      toast.success('Copied to clipboard');
-    }).catch((error) => {
-      toast.error(`Failed to copy: ${error.message}`);
-    });
-  };
 
   const handleCopyAndJump = () => {
     navigator.clipboard.writeText(noteContent.title).then(() => {
@@ -59,8 +52,8 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
   };
 
   return (
-    <div className='md:fixed md:top-1/4 w-full'>
-    <article className="md:flex sm:w-full mx-auto max-w-3xl justify-center border md:border-slate/10 md:rounded-lg md:p-6">
+    <div className='w-full h-screen'>
+    <article className="md:flex md:mt-10 sm:w-full mx-auto max-w-3xl justify-center border md:border-slate/10 md:rounded-lg md:p-6">
       <div className="md:w-[360px] sm:w-full">
         <Tweet noteId={noteContent.id?.toString() ?? ''} cate={noteContent.category} length={999} css={noteContent.css ?? ''} authorId={noteContent.authorId} content={noteContent.content} createdAt={noteContent.createdAt?.toString() ?? ''} />
       </div>
@@ -74,28 +67,22 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
             </span>
           </div>
         ))}
-        <div className='w-full my-1 flex justify-center'>
+        <div className='w-full my-2 flex justify-center'>
+
+
+          <Button
+            className='mr-auto text-xs'
+            variant={'outline'}
+            color='secondary'
+            onClick={handleCopyAndJump}
+          >
+            <CopyIcon className='mr-1 h-4 w-4' /> Copy & Jump to Reply
+          </Button>
           {noteContent.userId === "987654321" ? (
             <FavorButtons noteId={noteId} isFavored={true} />
           ) : (
             <EditButtons noteId={noteId} noteContent={noteContent} />
           )}
-          <Button
-            className="mx-auto"
-            variant={'outline'}
-            color='secondary'
-            size='icon'
-            onClick={handleCopy}
-          >
-            <CopyIcon />
-          </Button>
-          <Button
-            variant={'outline'}
-            color='secondary'
-            onClick={handleCopyAndJump}
-          >
-            Copy & Jump to Reply
-          </Button>
         </div>
         </div>
         {noteContent.userId != "987654321" && (
