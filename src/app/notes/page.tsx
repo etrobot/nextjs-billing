@@ -1,10 +1,11 @@
+'use client';
 import { Suspense } from 'react'
 import Notes from '@/components/notes'
 
-export default async  function Works() {
+export default async  function notes() {
   return (
     <Suspense>
-      <Notes param='user'/>
+      <Notes />
     </Suspense>
   )
 }

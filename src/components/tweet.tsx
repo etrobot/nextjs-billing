@@ -1,6 +1,4 @@
-// components/ArticleCard.tsx
 import React from 'react';
-import Image from 'next/image';
 import { TwitterX } from '@/components/icons/social';
 import Link from 'next/link';
 
@@ -17,7 +15,7 @@ interface ArticleCardProps {
 const Tweet: React.FC<ArticleCardProps> = ({ css,noteId, authorId, createdAt, content, length,cate }) => {
   return (
     <div className='opacity-88 p-3 bg-gray-400 bg-opacity-10 rounded-sm md:max-w-full'>
-      <Link href={`/?authorId=${authorId}`}>
+      <Link href={`/notes/?authorId=${authorId}`}>
       <div className="flex items-start justify-between w-full">
         <div className="flex items-start gap-2">
           <img
