@@ -2,12 +2,12 @@ import { Suspense } from "react";
 import { Plans } from "@/components/dashboard/billing/plans/plans";
 import { Subscriptions } from "@/components/dashboard/billing/subscription/subscriptions";
 import { DashboardContent } from "@/components/dashboard/content";
-import { PageTitleAction } from "@/components/dashboard/page-title-action";
-
 import { PlansSkeleton } from "@/components/dashboard/skeletons/plans";
 import { CardSkeleton } from "@/components/dashboard/skeletons/card";
 import { auth } from '@/auth'
 import { LoginButtons } from "@/components/login-buttons";
+import Script from "next/script";
+
 export const dynamic = "force-dynamic";
 
 export  default async function Profile() {
@@ -17,10 +17,14 @@ export  default async function Profile() {
   }
   return (
     <>
+    <Script
+    src="https://app.lemonsqueezy.com/js/lemon.js"
+    strategy="beforeInteractive"
+  />
         <DashboardContent
         title="Billing"
         subtitle="View and manage your billing information."
-        action={<PageTitleAction />}
+        
         >
         <div>
             <Suspense fallback={<CardSkeleton className="h-[106px]" />}>
