@@ -64,9 +64,9 @@ export async function Subscriptions() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {isValidSubscription(status) && (
+                  {/* {isValidSubscription(status) && (
                     <ChangePlan planId={subscription.planId} />
-                  )}
+                  )} */}
 
                   <SubscriptionActions subscription={subscription} />
                 </div>

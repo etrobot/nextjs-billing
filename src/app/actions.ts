@@ -140,7 +140,7 @@ export async function setupWebhook() {
     const newWebhook = await createWebhook(process.env.LEMONSQUEEZY_STORE_ID!, {
       secret: process.env.LEMONSQUEEZY_WEBHOOK_SECRET!,
       url: webhookUrl,
-      testMode: true, // will create a webhook in Test mode only!
+      testMode: false, // will create a webhook in Test mode only!
       events: [
         "subscription_created",
         "subscription_updated",
@@ -152,6 +152,7 @@ export async function setupWebhook() {
         "subscription_payment_failed",
         "subscription_payment_success",
         "subscription_payment_recovered",
+        "subscription_payment_refunded",
       ],
     });
 
