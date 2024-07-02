@@ -143,8 +143,15 @@ export async function setupWebhook() {
       testMode: true, // will create a webhook in Test mode only!
       events: [
         "subscription_created",
-        "subscription_expired",
         "subscription_updated",
+        "subscription_cancelled",
+        "subscription_resumed",
+        "subscription_expired",
+        "subscription_paused",
+        "subscription_unpaused",
+        "subscription_payment_failed",
+        "subscription_payment_success",
+        "subscription_payment_recovered",
       ],
     });
 
