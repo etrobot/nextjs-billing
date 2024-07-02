@@ -5,11 +5,8 @@ import { useSession } from 'next-auth/react';
 import { Button } from "@/components/ui/button";
 import Tweet from '@/components/tweet';
 import type { NewArticle as Article } from '@/db/schema-sqlite';
+import { useInView } from 'react-intersection-observer';
 
-interface Category {
-  listId: string;
-  category: string;
-}
 
 function Notes({ param }: { param?: string }) {
   const { data: session } = useSession();
@@ -22,6 +19,11 @@ function Notes({ param }: { param?: string }) {
   const searchParams = useSearchParams();
   const category = searchParams?.get('category') ?? '';
   const authorId = searchParams?.get('authorId') ?? '';
+
+  const { ref, inView } = useInView({
+    threshold: 1.0,
+    triggerOnce: false,
+  });
 
   const fetchArticles = useCallback(async (cursor: string | undefined = undefined, category: string = '') => {
     try {
@@ -36,7 +38,7 @@ function Notes({ param }: { param?: string }) {
     } catch (error) {
       console.error(error);
     }
-  }, [param]);
+  }, [param, userId, authorId]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -48,17 +50,15 @@ function Notes({ param }: { param?: string }) {
     }
   }, []);
 
-  const handleScroll = useCallback(() => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight && hasMore) {
+  useEffect(() => {
+    if (inView && hasMore) {
       void fetchArticles(nextCursor, category);
     }
-  }, [nextCursor, hasMore, fetchArticles, category]);
+  }, [inView, nextCursor, hasMore, fetchArticles, category]);
 
   useEffect(() => {
     void fetchArticles(undefined, category);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll, fetchArticles, category]);
+  }, [category, fetchArticles]);
 
   useEffect(() => {
     // Reset articles and cursor when category changes
@@ -98,12 +98,13 @@ function Notes({ param }: { param?: string }) {
           {articles.map((article) => (
             <div className="mb-4 z-0 break-inside-avoid-column sm:w-full min-w-sm" key={article.id}>
               <div className="border border-slate/10 rounded-lg p-4 flex flex-col items-start gap-3 h-fit">
-                <div className='cursor-pointer'onClick={() => handleArticleClick(article.id?.toString() ?? '')}>🤖:  {article.title}</div>
-                <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={280} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''}/>
-                </div>
+                <div className='cursor-pointer' onClick={() => handleArticleClick(article.id?.toString() ?? '')}>🤖:  {article.title}</div>
+                <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={280} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''} />
+              </div>
             </div>
           ))}
         </div>
+        {hasMore && <div ref={ref} className="h-1" />}
       </div>
     </>
   );

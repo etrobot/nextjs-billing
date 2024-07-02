@@ -1,7 +1,7 @@
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import OpenAI from 'openai';
 import { auth } from '@/auth';
-import { sqliteDb, note } from '@/db/schema-sqlite';
+import { sqliteDb, note,NewArticle } from '@/db/schema-sqlite';
 import { eq } from 'drizzle-orm';
 import { type Subscription } from "@lemonsqueezy/lemonsqueezy.js";
 import {
@@ -25,7 +25,7 @@ const openai = new OpenAI({
 
 export async function POST(req: Request) {
   const json = await req.json();
-  const { messages, id } = json; // id is the noteId
+  const { messages, id, req_userId } = json; // id is the noteId
   console.log('Chat request:', json);
   const userId = (await auth())?.user.id;
 
@@ -58,26 +58,42 @@ export async function POST(req: Request) {
 
   const res = await openai.chat.completions.create({
     model: process.env.LLM_BAK_MODEL ?? 'gpt-3.5-turbo',
-    messages,
+    messages: msg,
     temperature: 0.7,
     stream: true
   });
 
   const stream = OpenAIStream(res, {
     async onCompletion(completion) {
-      console.log(completion);
-      const updatedNoteData = {
-        title: completion,
-        updatedAt: Date.now()
-      };
-      // Update the existing note in the database
-      await sqliteDb
+      var noteId = id;
+      console.log(userId,req_userId,userId!=req_userId,noteId);
+      if (userId!=req_userId){
+        const existingNote = await sqliteDb
+        .select()
+        .from(note)
+        .where(eq(note.id, Number(noteId)))
+        .limit(1);
+    
+        const newNoteData = {
+          ...existingNote[0],
+          title: completion,
+          userId: userId,
+          updatedAt: Date.now(),
+        };
+        delete (newNoteData as NewArticle).id; // Ensure TypeScript knows that id can be deleted
+        await sqliteDb.insert(note).values(newNoteData);
+      }
+      else{
+        const updatedNoteData = {
+          title: completion,
+          updatedAt: Date.now()
+        };
+       await sqliteDb
         .update(note)
         .set(updatedNoteData)
         .where(eq(note.id, Number(id)));
-      // Optionally, return some response or perform further actions
+      }
     }
   });
-
   return new StreamingTextResponse(stream);
 }

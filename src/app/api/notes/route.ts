@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { sqliteDb, note, favorites, NewArticle as Article } from '@/db/schema-sqlite';
 import { desc, sql, eq, and, inArray } from 'drizzle-orm';
+import { auth } from '@/auth';
 
 
 export const GET = async (req: Request) => {
@@ -9,13 +10,17 @@ export const GET = async (req: Request) => {
   const pageSize = parseInt(searchParams.get('pageSize') ?? '10', 10);
   const category = searchParams.get('category');
   const favorId = searchParams.get('favorId');
-  const userId = searchParams.get('userId') ?? '987654321';
   const authorId = searchParams.get('authorId');
+  const session = await auth();
   
   try {
     // Base conditions
-    let conditions = [eq(note.userId, userId)];
-
+    let conditions = [];
+    if (searchParams.get('userId') && session?.user) {
+      conditions.push(eq(note.userId, session.user.id));
+    }else{
+      conditions.push(eq(note.userId, '987654321'));
+    }
     // Add category condition if category parameter is present
     if (category) {
       conditions.push(eq(note.category, category));
