@@ -47,7 +47,7 @@ const PlansPage: React.FC = () => {
                   </div>
                   <div className="relative"><div className="absolute inset-0 flex items-center"><span className="w-full border-t"></span></div><div className="relative flex justify-center text-xs uppercase"><span className="bg-background px-2 text-muted-foreground">free</span></div></div>
                                   </CardHeader>
-                <CardContent className='h-[200px]'>
+                <CardContent className='md:h-[200px]'>
                       <div className="text-large text-default-500 my-4 flex" >
                         <CircleCheckBigIcon color="blue" className="mr-4" /><span>Browse only</span>
                       </div>
@@ -80,7 +80,7 @@ const PlansPage: React.FC = () => {
                   </div>
                   <div className="relative"><div className="absolute inset-0 flex items-center"><span className="w-full border-t"></span></div><div className="relative flex justify-center text-xs uppercase"><span className="bg-background px-2 text-muted-foreground">{plan.name}</span></div></div>
                                   </CardHeader>
-                <CardContent className='h-[200px]'>
+                <CardContent className='md:h-[200px]'>
                   {plan.description ? (
                     plan.description.split(";").map((line: string, index: number) => (
                       <div className="text-large text-default-500 my-4 flex" key={index}>

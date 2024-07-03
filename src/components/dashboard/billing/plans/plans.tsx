@@ -53,7 +53,7 @@ export async function Plans({
 
   return (
     <div>
-      <h2 className='flex items-center after:ml-5 after:h-px after:grow after:bg-surface-100 after:content-[""]'>
+      <h2 className='flex mt-5 items-center after:ml-5 after:h-px after:grow after:bg-surface-100 after:content-[""]'>
         Plans
       </h2>
 

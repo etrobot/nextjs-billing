@@ -47,7 +47,7 @@ export function SubscriptionActionsDropdown({
           />
         </DropdownMenu.Trigger>
 
-        <DropdownMenu.Content side="bottom" className="z-10 bg-background" align="end">
+        <DropdownMenu.Content side="bottom" className="z-10 bg-background border border-surface-100 rounded-md" align="end">
           <DropdownMenu.Group>
             {!subscription.isPaused && (
               <DropdownMenu.Item

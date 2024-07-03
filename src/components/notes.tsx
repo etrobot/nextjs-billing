@@ -1,16 +1,13 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import { Button } from "@/components/ui/button";
 import Tweet from '@/components/tweet';
 import type { NewArticle as Article } from '@/db/schema-sqlite';
 import { useInView } from 'react-intersection-observer';
 
 
-function Notes({ param }: { param?: string }) {
-  const { data: session } = useSession();
-  const userId = session?.user.id;
+function Notes({ userId }: { userId?: string }) {
   const [articles, setArticles] = useState<Article[]>([]);
   const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -27,7 +24,7 @@ function Notes({ param }: { param?: string }) {
 
   const fetchArticles = useCallback(async (cursor: string | undefined = undefined, category: string = '') => {
     try {
-      const res = await fetch(`/api/notes?${cursor ? `startCursor=${cursor}&` : ''}pageSize=16${category ? `&category=${category}` : ''}${userId && param ? `&${param}Id=${userId}` : ''}${authorId ? `&authorId=${authorId}` : ''}`);
+      const res = await fetch(`/api/notes?${cursor ? `startCursor=${cursor}&` : ''}pageSize=16${category ? `&category=${category}` : ''}${userId ? `&$userId=${userId}` : ''}${authorId ? `&authorId=${authorId}` : ''}`);
       const data: { articles: Article[]; nextCursor: string; hasMore: boolean } = await res.json();
       setArticles(prev => {
         const newArticles = data.articles?.filter(article => !prev.some(a => a.id === article.id));
@@ -38,7 +35,7 @@ function Notes({ param }: { param?: string }) {
     } catch (error) {
       console.error(error);
     }
-  }, [param, userId, authorId]);
+  }, [userId, authorId]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -76,7 +73,7 @@ function Notes({ param }: { param?: string }) {
   };
 
   const handleCategoryClick = (newCategory: string) => {
-    void router.push(`${userId && param ? `/${param}` : ''}?category=${newCategory}`);
+    void router.push(`${userId ? `/$user` : ''}?category=${newCategory}`);
   };
 
   return (
@@ -93,6 +90,7 @@ function Notes({ param }: { param?: string }) {
           </Button>
         ))}
       </div>
+      {articles.length === 0 &&  <div className="flex h-[66vh] text-muted-foreground text-xl items-center justify-center py-10">No notes yet</div>}
       <div className="flex flex-col justify-center items-center p-4 gap-12 w-full">
         <div className="max-w-4xl sm:columns-1 md:columns-2 gap-4 mx-auto overflow-hidden relative transition-all">
           {articles.map((article) => (

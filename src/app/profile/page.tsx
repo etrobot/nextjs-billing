@@ -13,7 +13,9 @@ export const dynamic = "force-dynamic";
 export  default async function Profile() {
   const session = await auth();
   if(!session?.user) {
-    return <LoginButtons/>
+    return <div className="flex h-[76vh] items-center justify-center py-10">
+    <LoginButtons/>
+  </div>
   }
   return (
     <>
@@ -21,11 +23,12 @@ export  default async function Profile() {
     src="https://app.lemonsqueezy.com/js/lemon.js"
     strategy="beforeInteractive"
   />
-        <DashboardContent
-        title="Billing"
-        subtitle="View and manage your billing information."
-        
-        >
+
+        <DashboardContent>
+        <div className="flex w-full mb-5">
+          <img src={session?.user.image ?? ""} alt="profile image" width={32} height={32}/>
+          <h1 className="text-2xl font-bold ml-3">{session?.user.name}</h1>
+        </div>
         <div>
             <Suspense fallback={<CardSkeleton className="h-[106px]" />}>
             <Subscriptions />

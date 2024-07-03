@@ -52,7 +52,9 @@ async function getPreviousNoteId(noteId: number, userId: string) {
 export default async function NotePage({ params }: Props) {
   const session = await auth();
   if (!session?.user) {
-    return <LoginButtons/>
+    return <div className="flex h-[76vh] items-center justify-center py-10">
+    <LoginButtons/>
+  </div>
   }
 
   const { id } = params;
