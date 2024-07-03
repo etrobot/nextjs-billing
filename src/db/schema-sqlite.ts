@@ -17,6 +17,8 @@ export const note = sqliteTable("note", {
   updatedAt: real("updatedAt").default(Date.now()),
   userId: text("userId").notNull(),
   authorId: text("authorId").notNull(),
+  chat:text("chat"),
+  refNoteId: integer("refNoteId"),
   usedcount: integer("usedcount").default(0),
 });
 

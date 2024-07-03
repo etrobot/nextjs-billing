@@ -26,7 +26,7 @@ const openai = new OpenAI({
 export async function POST(req: Request) {
   const json = await req.json();
   const { messages, id, req_userId } = json; // id is the noteId
-  console.log('Chat request:', json);
+  // console.log('Chat request:', json);
   const userId = (await auth())?.user.id;
 
   if (!userId) {
@@ -65,33 +65,46 @@ export async function POST(req: Request) {
 
   const stream = OpenAIStream(res, {
     async onCompletion(completion) {
-      var noteId = id;
-      console.log(userId,req_userId,userId!=req_userId,noteId);
-      if (userId!=req_userId){
-        const existingNote = await sqliteDb
-        .select()
-        .from(note)
-        .where(eq(note.id, Number(noteId)))
-        .limit(1);
-    
-        const newNoteData = {
-          ...existingNote[0],
-          title: completion,
-          userId: userId,
-          updatedAt: Date.now(),
-        };
-        delete (newNoteData as NewArticle).id; // Ensure TypeScript knows that id can be deleted
-        await sqliteDb.insert(note).values(newNoteData);
-      }
-      else{
-        const updatedNoteData = {
-          title: completion,
-          updatedAt: Date.now()
-        };
-       await sqliteDb
-        .update(note)
-        .set(updatedNoteData)
-        .where(eq(note.id, Number(id)));
+      const newmsg=[...msg.slice(1, msg.length), { role: 'assistant', content: completion }];
+      const updatedNoteData = {
+        title: completion,
+        chat: JSON.stringify(newmsg),
+        updatedAt: Date.now()
+      };
+      if (userId==req_userId){
+        await sqliteDb
+          .update(note)
+          .set(updatedNoteData)
+          .where(eq(note.id, Number(id)));
+      }else{
+        const refNote = await sqliteDb
+          .select()
+          .from(note)
+          .where(eq(note.refNoteId, Number(id)))
+          .limit(1);
+        if (refNote.length > 0) {
+          await sqliteDb
+            .update(note)
+            .set(updatedNoteData)
+            .where(eq(note.id, Number(refNote[0].id)));
+        }else{
+          const existingNote = await sqliteDb
+          .select()
+          .from(note)
+          .where(eq(note.id, Number(id)))
+          .limit(1);
+      
+          const newNoteData = {
+            ...existingNote[0],
+            title: completion,
+            userId: userId,
+            chat: JSON.stringify(newmsg),
+            refNoteId: id,
+            updatedAt: Date.now(),
+          };
+          delete (newNoteData as NewArticle).id; // Ensure TypeScript knows that id can be deleted
+          await sqliteDb.insert(note).values(newNoteData);
+        }
       }
     }
   });

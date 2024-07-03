@@ -1,4 +1,3 @@
-import { type Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { notFound } from 'next/navigation';
 import { sqliteDb, note } from '@/db/schema-sqlite';
@@ -50,28 +49,6 @@ async function getPreviousNoteId(noteId: number, userId: string) {
   return previousNote.length > 0 ? previousNote[0].id : null;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = params;
-  const noteId = parseInt(id, 10);
-  const noteContent = await getNoteContent(noteId);
-  if (!noteContent) {
-    return {
-      title: 'Not Found',
-    };
-  }
-
-  const { title, content } = noteContent;
-  return {
-    title: title,
-    description: content.substring(0, 150), // Generate a short description from content
-    openGraph: {
-      title,
-      description: content.substring(0, 150),
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/notes/${id}`,
-    },
-  };
-}
-
 export default async function NotePage({ params }: Props) {
   const session = await auth();
   if (!session?.user) {
@@ -105,6 +82,7 @@ export default async function NotePage({ params }: Props) {
       <NoteContent
         noteContent={noteContent}
         noteId={noteId}
+        userId={session?.user.id}
       />
       {nextNoteId && (
         <Link href={`/note/${nextNoteId}`}>

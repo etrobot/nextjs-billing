@@ -15,11 +15,11 @@ import { useState, useEffect } from 'react'
 interface NoteContentProps {
   noteContent: NewArticle;
   noteId: number;
+  userId: string;
 }
 
-export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId }) => {
+export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId,userId }) => {
   const router = useRouter();
-  const [lastId,setLastId]=useState(noteId)
   const [initialMessages, setInitialMessages] = useState<Message[] | undefined>( [{
     id: nanoid(),
     role: 'system',
@@ -29,11 +29,17 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
     role: 'assistant',
     content: noteContent.title
   }]);
-
+  
+  useEffect(() => {
+    if(noteContent.chat){
+      setInitialMessages(JSON.parse(noteContent.chat));
+    }
+  })
+    
   const { messages, append, reload, stop, isLoading, input, setInput } = useChat({
     initialMessages,
     body: {
-      id: lastId.toString(),
+      id: noteId,
       req_userId: noteContent.userId
     },
     onResponse(response) {
@@ -44,12 +50,13 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
         router.push('/pricing');
       }
     },
-    onFinish: async () => {
-      const lId = await getLastNoteId();
-      if (lId && noteContent.userId=='987654321') {
-        setLastId(lId);
+    onFinish: () => {
+      if(noteContent.userId==='987654321'){
+        getLastNoteId().then((lastId) => {
+          router.push(`/note/${lastId}`);
+        })
       }
-    }
+    },
   });
 
   const handleCopyAndJump = () => {
@@ -62,9 +69,9 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
 
   const getLastNoteId = async () => {
     try {
-      const response = await fetch(`/api/notes?userId=${noteContent.userId}?pageSize=1`); // /notes?userId={userId}?pageSize=1
+      const response = await fetch(`/api/notes?userId=${userId}?pageSize=1`); // /notes?userId={userId}?pageSize=1
       const last = await response.json();
-      return last.notes[0].id;
+      return last.articles[0].id;
     } catch (error) {
       toast.error(`Failed to get last note: ${error}`);
     }
