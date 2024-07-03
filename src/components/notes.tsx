@@ -24,10 +24,10 @@ function Notes({ userId }: { userId?: string }) {
 
   const fetchArticles = useCallback(async (cursor: string | undefined = undefined, category: string = '') => {
     try {
-      const res = await fetch(`/api/notes?${cursor ? `startCursor=${cursor}&` : ''}pageSize=16${category ? `&category=${category}` : ''}${userId ? `&$userId=${userId}` : ''}${authorId ? `&authorId=${authorId}` : ''}`);
+      const res = await fetch(`/api/notes?${cursor ? `startCursor=${cursor}&` : ''}pageSize=16${category ? `&category=${category}` : ''}${userId ? `&userId=${userId}` : ''}${authorId ? `&authorId=${authorId}` : ''}`);
       const data: { articles: Article[]; nextCursor: string; hasMore: boolean } = await res.json();
       setArticles(prev => {
-        const newArticles = data.articles?.filter(article => !prev.some(a => a.id === article.id));
+        const newArticles: Article[] = data.articles?.filter(article => !prev.some(a => a.id === article.id));
         return [...prev, ...(newArticles ?? [])];
       });
       setNextCursor(data.nextCursor);
@@ -73,7 +73,7 @@ function Notes({ userId }: { userId?: string }) {
   };
 
   const handleCategoryClick = (newCategory: string) => {
-    void router.push(`${userId ? `/$user` : ''}?category=${newCategory}`);
+    void router.push(`${userId ? '/user' : ''}?category=${newCategory}`);
   };
 
   return (
