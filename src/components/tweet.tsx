@@ -1,6 +1,7 @@
 import React from 'react';
 import { TwitterX } from '@/components/icons/social';
 import Link from 'next/link';
+import truncate from 'html-truncate';
 
 interface ArticleCardProps {
   css: string;
@@ -38,7 +39,7 @@ const Tweet: React.FC<ArticleCardProps> = ({ css,noteId, authorId, createdAt, co
       </Link>
       <div className="content-container break-words">
         <Link href={`/note/${noteId}`}>
-        {content.substring(0, length)} {content.length > length ? '...' : ''}
+        <div dangerouslySetInnerHTML={{ __html: truncate(content, length, { ellipsis: '...' }) }} />
         </Link>
       </div>
     </div>
