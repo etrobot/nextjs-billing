@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Tweet from '@/components/tweet';
 import type { NewArticle as Article } from '@/db/schema-sqlite';
 import { useInView } from 'react-intersection-observer';
-
+import Link from 'next/link';
 
 function Notes({ userId }: { userId?: string }) {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -96,7 +96,7 @@ function Notes({ userId }: { userId?: string }) {
           {articles.map((article) => (
             <div className="mb-4 z-0 break-inside-avoid-column sm:w-full min-w-sm" key={article.id}>
               <div className="border border-slate/10 rounded-lg p-4 flex flex-col items-start gap-3 h-fit">
-                <div className='cursor-pointer' onClick={() => handleArticleClick(article.id?.toString() ?? '')}>🤖:  {article.title}</div>
+                <Link href={`/note/${article.id}`??'/'}>🤖:  {article.title}</Link>
                 <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={280} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''} />
               </div>
             </div>

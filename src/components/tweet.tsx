@@ -38,7 +38,7 @@ const Tweet: React.FC<ArticleCardProps> = ({ css,noteId, authorId, createdAt, co
       </div>
       </Link>
       <div className="content-container break-words">
-        {length ?  <Link href={`/note/${noteId}`}><p dangerouslySetInnerHTML={{ __html: truncate(content, length, { ellipsis: '...' }) }} /></Link> :
+        {length ?  <Link href={`/note/${noteId}`} dangerouslySetInnerHTML={{ __html: truncate(content, length, { ellipsis: '...' }) }} /> :
           <p dangerouslySetInnerHTML={{ __html: content }} />
         }
       </div>
