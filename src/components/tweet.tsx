@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import { TwitterX } from '@/components/icons/social';
 import Link from 'next/link';

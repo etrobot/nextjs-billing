@@ -5,6 +5,7 @@ import { eq, lt, gt, desc,asc } from 'drizzle-orm';
 import Link from 'next/link';
 import { ArrowRightIcon, ArrowLeftIcon } from 'lucide-react';
 import { NoteContent } from '@/components/note';
+import { auth } from '@/auth';
 
 type Props = {
   params: {
@@ -48,10 +49,9 @@ async function getPreviousNoteId(noteId: number, userId: string) {
 }
 
 export default async function NotePage({ params }: Props) {
-
+  const session = await auth();
   const { id } = params;
   const noteId = parseInt(id, 10);
-
   const noteContent = await getNoteContent(noteId);
   if (!noteContent) {
     notFound();
@@ -76,6 +76,7 @@ export default async function NotePage({ params }: Props) {
       <NoteContent
         noteContent={noteContent}
         noteId={noteId}
+        userId={session?.user.id}
       />
       {nextNoteId && (
         <Link href={`/note/${nextNoteId}`}>

@@ -11,33 +11,31 @@ import { CopyIcon } from 'lucide-react';
 import Tweet from '@/components/tweet';
 import { nanoid } from 'nanoid';
 import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react';
 
 interface NoteContentProps {
   noteContent: NewArticle;
   noteId: number;
+  userId?:string
 }
 
-export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId }) => {
+export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId,userId }) => {
   const router = useRouter();
-  const { data: session } = useSession();
   const [initialMessages, setInitialMessages] = useState<Message[]>([{
     id: nanoid(),
     role: 'system',
     content: `『@${noteContent.authorId}:\n` + noteContent.content + '』\n\n' + 'make a short reply on the tweet above'
-  },{
+  }, {
     id: nanoid(),
     role: 'assistant',
     content: noteContent.title
   }]);
-  
+
   useEffect(() => {
     if (noteContent.chat) {
       const parsedChat = JSON.parse(noteContent.chat);
       setInitialMessages(parsedChat);
     }
   }, [noteContent.chat]);
-
   const { messages, append, reload, stop, isLoading, input, setInput } = useChat({
     initialMessages,
     body: {
@@ -53,8 +51,8 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
       }
     },
     onFinish: () => {
-      if (noteContent.userId === '987654321' && session?.user?.id) {
-        getLastNoteId(session?.user?.id).then((lastId) => {
+      if (noteContent.userId === '987654321' && userId) {
+        getLastNoteId(userId).then((lastId) => {
           router.push(`/note/${lastId}`);
         });
       }
@@ -70,13 +68,13 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
   };
 
   const getLastNoteId = async (userId: string) => {
-    try {
-      const response = await fetch(`/api/notes?userId=${userId}&pageSize=1`);
-      const last = await response.json();
-      return last.articles[0].id;
-    } catch (error) {
-      toast.error(`Failed to get last note: ${error}`);
-    }
+      try {
+        const response = await fetch(`/api/notes?userId=${userId}&pageSize=1`);
+        const last = await response.json();
+        return last.articles[0].id;
+      } catch (error) {
+        toast.error(`Failed to get last note: ${error}`);
+      }
   };
 
   return (
@@ -88,7 +86,7 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
         <div className="sm:w-full md:w-[420px]">
           <div className='p-4 mb-16'>
             {messages.map((message, index) => (
-              message.role !== 'system' && 
+              message.role !== 'system' &&
               <div className='w-full flex' key={index}>
                 <span className={`${message.role === 'user' ? 'ml-auto bg-gray-300 rounded-md my-2 ml-auto p-1' : ''}`}>
                   {message.role === 'assistant' && '🤖: '} {message.content}
@@ -114,7 +112,7 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId })
           <div className="fixed bottom-16 md:w-[420px] w-full ml-auto">
             <PromptForm
               onSubmit={async value => {
-                if (!session?.user.id) {
+                if (!userId) {
                   router.push(`/signin?from=note/${noteId}`);
                 }
                 append({
