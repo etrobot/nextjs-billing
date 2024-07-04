@@ -57,7 +57,7 @@ const PlansPage: React.FC = () => {
                 </CardContent>
                 <CardFooter>
                 {!session ? (
-                    <Link href={`/signin`}>
+                    <Link href={`/signin?from=pricing`}>
                       <Button className="w-full" >Get Started</Button>
                     </Link>
                   ) : (

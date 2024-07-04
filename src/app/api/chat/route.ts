@@ -54,7 +54,7 @@ export async function POST(req: Request) {
       });
   }
 
-  const msg = [...messages.slice(0, -1), { role: 'user', content: messages[messages.length - 1].content+'\n\n the final output must be a short reply tweet.' }];
+  const msg = [...messages.slice(0, -1), { role: 'user', content: messages[messages.length - 1].content}];
 
   const res = await openai.chat.completions.create({
     model: process.env.LLM_BAK_MODEL ?? 'gpt-3.5-turbo',

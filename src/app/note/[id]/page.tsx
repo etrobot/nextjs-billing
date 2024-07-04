@@ -3,10 +3,8 @@ import { notFound } from 'next/navigation';
 import { sqliteDb, note } from '@/db/schema-sqlite';
 import { eq, lt, gt, desc,asc } from 'drizzle-orm';
 import Link from 'next/link';
-import { auth } from '@/auth';
 import { ArrowRightIcon, ArrowLeftIcon } from 'lucide-react';
 import { NoteContent } from '@/components/note';
-import { LoginButtons } from "@/components/login-buttons";
 
 type Props = {
   params: {
@@ -50,12 +48,6 @@ async function getPreviousNoteId(noteId: number, userId: string) {
 }
 
 export default async function NotePage({ params }: Props) {
-  const session = await auth();
-  if (!session?.user) {
-    return <div className="flex h-[76vh] items-center justify-center py-10">
-    <LoginButtons/>
-  </div>
-  }
 
   const { id } = params;
   const noteId = parseInt(id, 10);
@@ -84,7 +76,6 @@ export default async function NotePage({ params }: Props) {
       <NoteContent
         noteContent={noteContent}
         noteId={noteId}
-        userId={session?.user.id}
       />
       {nextNoteId && (
         <Link href={`/note/${nextNoteId}`}>

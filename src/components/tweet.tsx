@@ -9,7 +9,7 @@ interface ArticleCardProps {
   authorId: string;
   createdAt: string;
   content: string;
-  length: number;
+  length?: number;
   cate: string
 }
 
@@ -38,9 +38,9 @@ const Tweet: React.FC<ArticleCardProps> = ({ css,noteId, authorId, createdAt, co
       </div>
       </Link>
       <div className="content-container break-words">
-        <Link href={`/note/${noteId}`}>
-        <div dangerouslySetInnerHTML={{ __html: truncate(content, length, { ellipsis: '...' }) }} />
-        </Link>
+        {length ?  <Link href={`/note/${noteId}`}><p dangerouslySetInnerHTML={{ __html: truncate(content, length, { ellipsis: '...' }) }} /></Link> :
+          <p dangerouslySetInnerHTML={{ __html: content }} />
+        }
       </div>
     </div>
   );
