@@ -9,7 +9,7 @@ import Image from "next/image";
 export const metadata: Metadata = {
   title: "Inspilot",
 };
-import { GoogleTagManager } from '@next/third-parties/google'
+import { GoogleTagManager,GoogleAnalytics } from '@next/third-parties/google'
 
 
 export const viewport = {
@@ -28,7 +28,8 @@ export default function RootLayout({
 }: RootLayoutProps) {
   return (
     <html lang="en">
-      <GoogleTagManager gtmId={process.env.GTM_ID!} />
+      <GoogleTagManager gtmId={process.env.GTM_ID!}/>
+      <GoogleAnalytics gaId={process.env.GA_ID!} />
       <body>
         <SessionProvider>
           <Providers
