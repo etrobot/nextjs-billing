@@ -95,8 +95,8 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId, u
               message.role !== 'system' &&
               <div className='w-full flex' key={index}>
                 <span
-                  className={`${message.role === 'user' ? 'ml-auto bg-gray-300 rounded-md my-2 ml-auto p-1 max-w-xs' : ''}`}
-                  dangerouslySetInnerHTML={{ __html: message.role === 'assistant' ? '🤖: ' + message.content : message.content }}
+                  className={`${message.role === 'user' ? 'ml-auto bg-blue-500 bg-opacity-20 rounded-md my-2 ml-auto p-1 max-w-xs' : ''}`}
+                  dangerouslySetInnerHTML={{ __html: message.role === 'assistant' ? '🤖: ' + message.content.replace(/```/g, '') : message.content }}
                 />
               </div>
             ))}

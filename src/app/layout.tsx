@@ -39,7 +39,13 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Navbar />
-            <Image src="/icon.png" alt="Icon" width={56} height={56} className="mx-auto my-4"/>
+            <div className="flex justify-center my-2">
+            <Image src="/icon.png" alt="Icon" width={40} height={40}/>
+            <h1 className='mx-1 title font-extrabold text-3xl tracking-tight'>
+                INSPILOT
+            </h1>
+            </div>
+
             {children}
           </Providers>
         </SessionProvider>

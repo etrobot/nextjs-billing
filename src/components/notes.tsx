@@ -137,10 +137,10 @@ function Notes({ userId }: { userId?: string }) {
           {articles.map((article) => (
             <div className="mb-4 z-0 break-inside-avoid-column sm:w-full min-w-sm" key={article.id}>
               <div
-                className={`border ${selectedTweets.some(tweet => tweet.id === article.id) ? 'border-purple-500' : 'border-slate/10'} rounded-lg p-4 flex flex-col items-start gap-3 h-fit cursor-pointer`}
+                className={`border ${selectedTweets.some(tweet => tweet.id === article.id) ? 'border-primary' : 'border-slate/10'} rounded-lg p-4 flex flex-col items-start gap-3 h-fit cursor-pointer`}
                 onClick={() => toggleSelectTweet(article)}
               >
-                <Link className="hover:underline text-wrap b" href={`/note/${article.id}`}>🤖: {article.title.slice(0, 70) + '...'}</Link>
+                <Link className="hover:underline text-wrap break-words" href={`/note/${article.id}`}>🤖: {article.title.slice(0, 70) + '...'}</Link>
                 <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={280} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''} />
               </div>
             </div>
@@ -149,7 +149,7 @@ function Notes({ userId }: { userId?: string }) {
         {hasMore && <div ref={ref} className="h-1" />}
       </div>
       {selectedTweets.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 px-1 bg-background border-t border-slate/10">
+        <div className="fixed bottom-0 left-0 right-0 p-1 bg-background border-t border-slate/10">
           <div className="flex flex-wrap gap-2 justify-center v-items-centers mb-16 md:mb-1">
             {selectedTweets.map(tweet => (
               tweet.id &&
@@ -163,8 +163,8 @@ function Notes({ userId }: { userId?: string }) {
               </div>
             ))}
             <div>
-              <div className='m-2'>Batch Reply</div>
-              <Button className='w-full rounded-full' size='icon' onClick={handleBatchReply}>Gen✨</Button>
+              <Button  className='w-full my-2' variant="link" onClick={() => setSelectedTweets([])}>clear</Button>
+              <Button className='w-full rounded-full text-md text-white' size='icon' onClick={handleBatchReply}>GEN✨</Button>
             </div>
           </div>
         </div>
