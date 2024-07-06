@@ -57,11 +57,13 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId, u
       const parsedChat = JSON.parse(noteContent.chat);
       setInitialMessages(parsedChat);
     } else {
+      if(noteContent.authorId === 'Inspilot') {
       append({
         id: nanoid(),
         role: 'user',
         content: 'make a extreme short question or praise words to reply every picked tweet and end with an emoji,directily output in html format as <p>to @<a href=TWEET_LINK class="underline">author:</a>REPLY<p>'
-      });
+        });
+      }
     }
   }, [noteContent.chat]);
   const handleCopyAndJump = () => {
