@@ -6,12 +6,15 @@ import Tweet from '@/components/tweet';
 import type { NewArticle as Article } from '@/db/schema-sqlite';
 import { useInView } from 'react-intersection-observer';
 import Link from 'next/link';
+import { X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 function Notes({ userId }: { userId?: string }) {
   const [articles, setArticles] = useState<Article[]>([]);
   const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [categories, setCategories] = useState<string[]>([]);
+  const [selectedTweets, setSelectedTweets] = useState<Article[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = searchParams?.get('category') ?? '';
@@ -25,6 +28,9 @@ function Notes({ userId }: { userId?: string }) {
   const fetchArticles = useCallback(async (cursor: string | undefined = undefined, category: string = '') => {
     try {
       const res = await fetch(`/api/notes?${cursor ? `startCursor=${cursor}&` : ''}pageSize=16${category ? `&category=${category}` : ''}${userId ? `&userId=${userId}` : ''}${authorId ? `&authorId=${authorId}` : ''}`);
+      if (res.status === 401 && userId) {
+        router.push('/signin?from=user');
+      }
       const data: { articles: Article[]; nextCursor: string; hasMore: boolean } = await res.json();
       setArticles(prev => {
         const newArticles: Article[] = data.articles?.filter(article => !prev.some(a => a.id === article.id));
@@ -35,7 +41,7 @@ function Notes({ userId }: { userId?: string }) {
     } catch (error) {
       console.error(error);
     }
-  }, [userId, authorId]);
+  }, [userId, authorId, router]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -68,12 +74,47 @@ function Notes({ userId }: { userId?: string }) {
     void fetchCategories();
   }, [fetchCategories]);
 
-  const handleArticleClick = (id: string) => {
-    void router.push(`/note/${id}`);
-  };
-
   const handleCategoryClick = (newCategory: string) => {
     void router.push(`${userId ? '/user' : ''}?category=${newCategory}`);
+  };
+
+  const toggleSelectTweet = (article: Article) => {
+    setSelectedTweets(prev => {
+      const isSelected = prev.some(tweet => tweet.id === article.id);
+      if (isSelected) {
+        return prev.filter(tweet => tweet.id !== article.id);
+      } else {
+        return [...prev, article];
+      }
+    });
+  };
+
+  const handleUnselectTweet = (id: string) => {
+    setSelectedTweets(prev => prev.filter(tweet => tweet.id !== Number(id)));
+  };
+
+  const handleBatchReply = async () => {
+    const data = selectedTweets.map(tweet => `<p><a href="${tweet.link}">@${tweet.authorId}:</a> ${tweet.content}</p>`).join('');
+    try {
+      const res = await fetch('/api/batch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data }),
+      });
+      const response = await res.json();
+      if (response.status !== 200) {
+        toast.error(`${response.status} ${response.statusText}`);
+      }
+      if (response.status === 401) {
+        router.push('/signin?from=');
+      }
+      const noteId = response.noteId;
+      router.push(`/note/${noteId}`);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -90,13 +131,16 @@ function Notes({ userId }: { userId?: string }) {
           </Button>
         ))}
       </div>
-      {articles.length === 0 &&  <div className="flex h-[66vh] text-muted-foreground text-xl items-center justify-center py-10">No notes yet</div>}
+      {articles.length === 0 && <div className="flex h-[66vh] text-muted-foreground text-xl items-center justify-center py-10">No notes yet</div>}
       <div className="flex flex-col justify-center items-center p-4 gap-12 w-full">
-        <div className="max-w-4xl sm:columns-1 md:columns-2 gap-4 mx-auto overflow-hidden relative transition-all">
+        <div className="max-w-3xl sm:columns-1 md:columns-2 gap-4 mx-auto overflow-hidden relative transition-all">
           {articles.map((article) => (
             <div className="mb-4 z-0 break-inside-avoid-column sm:w-full min-w-sm" key={article.id}>
-              <div className="border border-slate/10 rounded-lg p-4 flex flex-col items-start gap-3 h-fit">
-                <Link href={`/note/${article.id}`??'/'}>🤖:  {article.title}</Link>
+              <div
+                className={`border ${selectedTweets.some(tweet => tweet.id === article.id) ? 'border-purple-500' : 'border-slate/10'} rounded-lg p-4 flex flex-col items-start gap-3 h-fit cursor-pointer`}
+                onClick={() => toggleSelectTweet(article)}
+              >
+                <Link className="hover:underline text-wrap b" href={`/note/${article.id}`}>🤖: {article.title.slice(0, 70) + '...'}</Link>
                 <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={280} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''} />
               </div>
             </div>
@@ -104,6 +148,27 @@ function Notes({ userId }: { userId?: string }) {
         </div>
         {hasMore && <div ref={ref} className="h-1" />}
       </div>
+      {selectedTweets.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 px-1 bg-background border-t border-slate/10">
+          <div className="flex flex-wrap gap-2 justify-center v-items-centers mb-16 md:mb-1">
+            {selectedTweets.map(tweet => (
+              tweet.id &&
+              <div
+                key={tweet.id}
+                className="p-1 bg-secondary rounded-lg relative"
+                onClick={() => handleUnselectTweet(tweet.id?.toString() ?? '')}
+              >
+                <X className="absolute top-0 right-0 p-1 bg-black rounded-full text-white cursor-pointer" />
+                <Tweet noteId={tweet.id.toString()} cate={tweet.category} length={14} css={tweet.css ?? ''} authorId={tweet.authorId} content={tweet.content} />
+              </div>
+            ))}
+            <div>
+              <div className='m-2'>Batch Reply</div>
+              <Button className='w-full rounded-full' size='icon' onClick={handleBatchReply}>Gen✨</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

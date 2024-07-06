@@ -15,10 +15,10 @@ import { useState, useEffect } from 'react'
 interface NoteContentProps {
   noteContent: NewArticle;
   noteId: number;
-  userId?:string
+  userId?: string
 }
 
-export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId,userId }) => {
+export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId, userId }) => {
   const router = useRouter();
   const [initialMessages, setInitialMessages] = useState<Message[]>([{
     id: nanoid(),
@@ -29,13 +29,6 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId,us
     role: 'assistant',
     content: noteContent.title
   }]);
-
-  useEffect(() => {
-    if (noteContent.chat) {
-      const parsedChat = JSON.parse(noteContent.chat);
-      setInitialMessages(parsedChat);
-    }
-  }, [noteContent.chat]);
   const { messages, append, reload, stop, isLoading, input, setInput } = useChat({
     initialMessages,
     body: {
@@ -59,6 +52,18 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId,us
     },
   });
 
+  useEffect(() => {
+    if (noteContent.chat) {
+      const parsedChat = JSON.parse(noteContent.chat);
+      setInitialMessages(parsedChat);
+    } else {
+      append({
+        id: nanoid(),
+        role: 'user',
+        content: 'make a extreme short question or praise words to reply every picked tweet and end with an emoji,directily output in html format as <p>to @<a href=TWEET_LINK class="underline">author:</a>REPLY<p>'
+      });
+    }
+  }, [noteContent.chat]);
   const handleCopyAndJump = () => {
     navigator.clipboard.writeText(noteContent.title).then(() => {
       window.open(noteContent.link, '_blank');
@@ -68,14 +73,15 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId,us
   };
 
   const getLastNoteId = async (userId: string) => {
-      try {
-        const response = await fetch(`/api/notes?userId=${userId}&pageSize=1`);
-        const last = await response.json();
-        return last.articles[0].id;
-      } catch (error) {
-        toast.error(`Failed to get last note: ${error}`);
-      }
+    try {
+      const response = await fetch(`/api/notes?userId=${userId}&pageSize=1`);
+      const last = await response.json();
+      return last.articles[0].id;
+    } catch (error) {
+      toast.error(`Failed to get last note: ${error}`);
+    }
   };
+
 
   return (
     <div className='w-full h-[70vh]'>
@@ -88,9 +94,10 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId,us
             {messages.map((message, index) => (
               message.role !== 'system' &&
               <div className='w-full flex' key={index}>
-                <span className={`${message.role === 'user' ? 'ml-auto bg-gray-300 rounded-md my-2 ml-auto p-1' : ''}`}>
-                  {message.role === 'assistant' && '🤖: '} {message.content}
-                </span>
+                <span
+                  className={`${message.role === 'user' ? 'ml-auto bg-gray-300 rounded-md my-2 ml-auto p-1 max-w-xs' : ''}`}
+                  dangerouslySetInnerHTML={{ __html: message.role === 'assistant' ? '🤖: ' + message.content : message.content }}
+                />
               </div>
             ))}
             <div className='w-full my-2 flex justify-center'>
@@ -99,14 +106,14 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId,us
               ) : (
                 <EditButtons noteId={noteId} noteContent={noteContent} />
               )}
-              <Button
-                className='ml-auto text-xs'
+              {noteContent.link && <Button
+                className='ml-auto text-xs text-b'
                 variant={'outline'}
                 color='secondary'
                 onClick={handleCopyAndJump}
               >
                 <CopyIcon className='mr-1 h-4 w-4' /> Copy & Jump to Reply
-              </Button>
+              </Button>}
             </div>
           </div>
           <div className="fixed bottom-16 md:w-[420px] w-full ml-auto">

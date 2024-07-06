@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     async onCompletion(completion) {
       const newmsg=[...msg.slice(1, msg.length), { role: 'assistant', content: completion }];
       const updatedNoteData = {
-        title: completion,
+        title: completion.replace(/<[^>]*>/g, ''),
         chat: JSON.stringify(newmsg),
         updatedAt: Date.now()
       };
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
       
           const newNoteData = {
             ...existingNote[0],
-            title: completion,
+            title: completion.replace(/<[^>]*>/g, ''),
             userId: userId,
             chat: JSON.stringify(newmsg),
             refNoteId: id,

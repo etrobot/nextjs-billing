@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { sqliteDb, note, favorites, NewArticle as Article } from '@/db/schema-sqlite';
-import { desc, sql, eq, and, inArray } from 'drizzle-orm';
+import { sqliteDb, note, NewArticle as Article } from '@/db/schema-sqlite';
+import { desc, sql, eq, and } from 'drizzle-orm';
 import { auth } from '@/auth';
 
 
@@ -9,15 +9,18 @@ export const GET = async (req: Request) => {
   const startCursor = parseInt(searchParams.get('startCursor') ?? '0', 10);
   const pageSize = parseInt(searchParams.get('pageSize') ?? '10', 10);
   const category = searchParams.get('category');
-  const favorId = searchParams.get('favorId');
   const authorId = searchParams.get('authorId');
-  const session = await auth();
   
   try {
     // Base conditions
     let conditions = [];
-    if (searchParams.get('userId') && session?.user) {
-      conditions.push(eq(note.userId, session.user.id));
+    if (searchParams.get('userId')) {
+      const session = await auth();
+      if(session){
+        conditions.push(eq(note.userId, session.user.id));
+      }else{
+        return NextResponse.json({ error: 'auth error' }, { status: 401 })
+      }
     }else{
       conditions.push(eq(note.userId, '987654321'));
     }
@@ -29,31 +32,6 @@ export const GET = async (req: Request) => {
     if (authorId) {
       console.log(authorId);
       conditions.push(eq(note.authorId, authorId));
-    }
-
-    let articleIds: number[] = [];
-    if (favorId) {
-      // Query favorite articles by favorId
-      const favoritesQuery = await sqliteDb
-        .select({
-          articleId: favorites.articleId,
-        })
-        .from(favorites)
-        .where(eq(favorites.userId, favorId));
-
-      articleIds = favoritesQuery.map(fav => fav.articleId);
-
-      // Add condition to filter articles by the favorite article IDs
-      if (articleIds.length > 0) {
-        conditions.push(inArray(note.id, articleIds));
-      } else {
-        // If no favorite articles found, return empty result
-        return NextResponse.json({
-          articles: [],
-          nextCursor: null,
-          hasMore: false,
-        }, { status: 200 });
-      }
     }
 
     // Construct the query with conditions

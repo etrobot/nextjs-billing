@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
 
 export const note = sqliteTable("note", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+  id: integer("id").notNull().primaryKey({ autoIncrement: true }),
   link: text("link").notNull(),
   title: text("title").notNull(),
   category: text("category").notNull(),
@@ -13,14 +13,15 @@ export const note = sqliteTable("note", {
   css: text("css"),
   content: text("content").notNull(),
   inspiration: text("inspiration"),
-  createdAt: real("createdAt").notNull().default(Date.now()),
-  updatedAt: real("updatedAt").default(Date.now()),
+  createdAt: real("createdAt").notNull().default(Date.now()/1000),
+  updatedAt: real("updatedAt").default(Date.now()/1000),
   userId: text("userId").notNull(),
   authorId: text("authorId").notNull(),
   chat:text("chat"),
   refNoteId: integer("refNoteId"),
   usedcount: integer("usedcount").default(0),
 });
+export type NewArticle = typeof note.$inferInsert;
 
 // Add the favorites table
 export const favorites = sqliteTable("favorite", {
@@ -42,7 +43,6 @@ export const category = sqliteTable("category", {
   category: text("category").notNull(),
 });
 
-export type NewArticle = typeof note.$inferInsert;
 export type NewCatetogory = typeof category.$inferInsert;
 export type NewFavorite = typeof favorites.$inferInsert;
 export type NewAvatar = typeof avatar.$inferInsert;
