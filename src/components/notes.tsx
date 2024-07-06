@@ -30,6 +30,7 @@ function Notes({ userId }: { userId?: string }) {
       const res = await fetch(`/api/notes?${cursor ? `startCursor=${cursor}&` : ''}pageSize=16${category ? `&category=${category}` : ''}${userId ? `&userId=${userId}` : ''}${authorId ? `&authorId=${authorId}` : ''}`);
       if (res.status === 401 && userId) {
         router.push('/signin?from=user');
+        return
       }
       const data: { articles: Article[]; nextCursor: string; hasMore: boolean } = await res.json();
       setArticles(prev => {
@@ -103,13 +104,14 @@ function Notes({ userId }: { userId?: string }) {
         },
         body: JSON.stringify({ data }),
       });
-      const response = await res.json();
-      if (response.status !== 200) {
-        toast.error(`${response.status} ${response.statusText}`);
+      if (res.status !== 200) {
+        toast.error(`${res.status} ${res.statusText}`);
       }
-      if (response.status === 401) {
+      if (res.status === 401) {
         router.push('/signin?from=');
+        return
       }
+      const response = await res.json();
       const noteId = response.noteId;
       router.push(`/note/${noteId}`);
     } catch (error) {
