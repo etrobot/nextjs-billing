@@ -37,7 +37,7 @@ const Tweet: React.FC<ArticleCardProps> = ({ css, noteId, authorId, createdAt, c
         </div>
         <TwitterX className="w-6 h-6 opacity-50" />
       </div>
-      <div className="content-container break-words max-w-xs">
+      <div className="content-container break-words max-w-xs dark:opacity-80">
         {length ? <p dangerouslySetInnerHTML={{ __html: truncate(content.replace(/<a\b[^>]*>(.*?)<\/a>/gi, '$1'), length, { ellipsis: '...' }) }} /> :
           <p dangerouslySetInnerHTML={{ __html: content }} />
         }
