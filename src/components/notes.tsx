@@ -157,11 +157,11 @@ function Notes({ userId }: { userId?: string }) {
               tweet.id &&
               <div
                 key={tweet.id}
-                className="p-1 bg-secondary rounded-lg relative"
+                className="p-1 bg-secondary rounded-lg relative text-xs"
                 onClick={() => handleUnselectTweet(tweet.id?.toString() ?? '')}
               >
                 <X className="absolute top-0 right-0 p-1 bg-black rounded-full text-white cursor-pointer" />
-                <Tweet noteId={tweet.id.toString()} cate={tweet.category} length={14} css={tweet.css ?? ''} authorId={tweet.authorId} content={tweet.content} />
+                <Tweet noteId={tweet.id.toString()} cate={tweet.category} length={17} css={tweet.css ?? ''} authorId={tweet.authorId} content={tweet.content} />
               </div>
             ))}
             <div>
