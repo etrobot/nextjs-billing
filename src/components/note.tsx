@@ -52,20 +52,28 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId, u
     },
   });
 
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
-    if (noteContent.chat && !isLoading) {
-      const parsedChat = JSON.parse(noteContent.chat);
-      setInitialMessages(parsedChat);
-    } else {
-      if(noteContent.authorId === 'Inspilot' && !isLoading) {
-      append({
-        id: nanoid(),
-        role: 'user',
-        content: 'make a extreme short question and praise words to reply every picked tweet and end with an emoji,directily output in html format as <p>to @<a href=TWEET_LINK class="underline">author:</a>REPLY<p>'
-        });
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      if (noteContent.chat && !isLoading) {
+        const parsedChat = JSON.parse(noteContent.chat);
+        setInitialMessages(parsedChat);
+      } else {
+        if(noteContent.authorId === 'Inspilot' && !isLoading) {
+          append({
+            id: nanoid(),
+            role: 'user',
+            content: 'make a extreme short question and praise words to reply every picked tweet and end with an emoji,directily output in html format as <br><a href=TWEET_LINK  taret="_blank" class="underline">to @author:</a><p>REPLY</p>'
+          });
+        }
       }
     }
-  }, [noteContent.chat]);
+  }, [isMounted]);
   const handleCopyAndJump = () => {
     navigator.clipboard.writeText(noteContent.title).then(() => {
       window.open(noteContent.link, '_blank');

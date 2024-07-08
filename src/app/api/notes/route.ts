@@ -38,6 +38,7 @@ export const GET = async (req: Request) => {
     const articlesQuery = await sqliteDb
       .select({
         id: note.id,
+        link: note.link,
         userId: note.userId,
         title: note.title,
         category: note.category,
@@ -55,13 +56,13 @@ export const GET = async (req: Request) => {
 
       const articles: Article[] = articlesQuery.map((article) => ({
         id: article.id,
+        link: article.link,
         title: article.title,
         content: article.content,
         authorId: article.authorId,
         css: article.css,
         createdAt: article.createdAt,
         useCount: article.useCount ?? 0,
-        link: '', // Add the link property with appropriate value
         userId: article.userId, // Add the userId property with appropriate value
         category: article.category, // Add the category property with appropriate value
         tags: '',

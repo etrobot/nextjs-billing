@@ -98,7 +98,7 @@ function Notes({ userId }: { userId?: string }) {
   const handleBatchReply = async () => {
     setLoading(true);
     const title = selectedTweets.map(tweet => `to @${tweet.authorId}: ${tweet.title}`).join('<br>');
-    const content = selectedTweets.map(tweet => `<p><a href="${tweet.link}">@${tweet.authorId}:</a> ${tweet.content}</p>`).join('');
+    const content = selectedTweets.map(tweet => `<p><a href="${tweet.link}">@${tweet.authorId}:</a> ${tweet.content}</p>`).join('').replace('<br><br>','<br>');
     try {
       const res = await fetch('/api/batch', {
         method: 'POST',
@@ -169,7 +169,7 @@ function Notes({ userId }: { userId?: string }) {
             ))}
             <div>
               <Button  className='w-full my-2' variant="link" onClick={() => setSelectedTweets([])}>clear</Button>
-              <Button className='w-full rounded-full text-md text-white' size='icon' disabled={loading} onClick={handleBatchReply}>{loading?'loading':'GEN✨'} </Button>
+              <Button className='w-full rounded-full text-md text-white' size='icon' disabled={loading} onClick={handleBatchReply}>{loading?'Loading...':'GEN✨'} </Button>
             </div>
           </div>
         </div>
