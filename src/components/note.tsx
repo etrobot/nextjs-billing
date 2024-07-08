@@ -57,7 +57,7 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId, u
       const parsedChat = JSON.parse(noteContent.chat);
       setInitialMessages(parsedChat);
     } else {
-      if(noteContent.authorId === 'Inspilot') {
+      if(noteContent.authorId === 'Inspilot' && !isLoading) {
       append({
         id: nanoid(),
         role: 'user',

@@ -95,14 +95,15 @@ function Notes({ userId }: { userId?: string }) {
   };
 
   const handleBatchReply = async () => {
-    const data = selectedTweets.map(tweet => `<p><a href="${tweet.link}">@${tweet.authorId}:</a> ${tweet.content}</p>`).join('');
+    const title = selectedTweets.map(tweet => `to @${tweet.authorId}: ${tweet.title}`).join('<br>');
+    const content = selectedTweets.map(tweet => `<p><a href="${tweet.link}">@${tweet.authorId}:</a> ${tweet.content}</p>`).join('');
     try {
       const res = await fetch('/api/batch', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data }),
+        body: JSON.stringify({ title, content }),
       });
       if (res.status !== 200) {
         toast.error(`${res.status} ${res.statusText}`);

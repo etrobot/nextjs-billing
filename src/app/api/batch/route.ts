@@ -9,14 +9,14 @@ export const POST = async (req: Request) => {
   }
 
   try {
-    const { data } = await req.json();
+    const { title, content } = await req.json();
     const userId = session.user.id;
 
     const newNoteData: Omit<NewArticle, 'id'> = {
       link: '',
-      title: '',
+      title,
       category: '',
-      content: data,
+      content,
       userId: userId,
       authorId: 'Inspilot',
     };
