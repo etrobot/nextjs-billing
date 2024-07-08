@@ -61,7 +61,7 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId, u
       append({
         id: nanoid(),
         role: 'user',
-        content: 'make a extreme short question or praise words to reply every picked tweet and end with an emoji,directily output in html format as <p>to @<a href=TWEET_LINK class="underline">author:</a>REPLY<p>'
+        content: 'make a extreme short question and praise words to reply every picked tweet and end with an emoji,directily output in html format as <p>to @<a href=TWEET_LINK class="underline">author:</a>REPLY<p>'
         });
       }
     }
@@ -94,7 +94,7 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId, u
         <div className="sm:w-full md:w-[420px]">
           <div className='p-4 mb-16'>
             {messages.map((message, index) => (
-              message.role !== 'system' &&
+              message.role !== 'system' && message.content.length > 0 &&
               <div className='w-full flex' key={index}>
                 <span
                   className={`${message.role === 'user' ? 'ml-auto bg-blue-500 bg-opacity-20 rounded-md my-2 ml-auto p-1 max-w-xs' : ''}`}
