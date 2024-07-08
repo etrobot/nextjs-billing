@@ -15,6 +15,7 @@ function Notes({ userId }: { userId?: string }) {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedTweets, setSelectedTweets] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = searchParams?.get('category') ?? '';
@@ -55,7 +56,7 @@ function Notes({ userId }: { userId?: string }) {
   }, []);
 
   useEffect(() => {
-    if (inView && hasMore) {
+    if (inView && hasMore && !loading) {
       void fetchArticles(nextCursor, category);
     }
   }, [inView, nextCursor, hasMore, fetchArticles, category]);
@@ -95,6 +96,7 @@ function Notes({ userId }: { userId?: string }) {
   };
 
   const handleBatchReply = async () => {
+    setLoading(true);
     const title = selectedTweets.map(tweet => `to @${tweet.authorId}: ${tweet.title}`).join('<br>');
     const content = selectedTweets.map(tweet => `<p><a href="${tweet.link}">@${tweet.authorId}:</a> ${tweet.content}</p>`).join('');
     try {
@@ -167,7 +169,7 @@ function Notes({ userId }: { userId?: string }) {
             ))}
             <div>
               <Button  className='w-full my-2' variant="link" onClick={() => setSelectedTweets([])}>clear</Button>
-              <Button className='w-full rounded-full text-md text-white' size='icon' onClick={handleBatchReply}>GEN✨</Button>
+              <Button className='w-full rounded-full text-md text-white' size='icon' disabled={loading} onClick={handleBatchReply}>{loading?'loading':'GEN✨'} </Button>
             </div>
           </div>
         </div>

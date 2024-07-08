@@ -53,7 +53,7 @@ export const NoteContent: React.FC<NoteContentProps> = ({ noteContent, noteId, u
   });
 
   useEffect(() => {
-    if (noteContent.chat) {
+    if (noteContent.chat && !isLoading) {
       const parsedChat = JSON.parse(noteContent.chat);
       setInitialMessages(parsedChat);
     } else {
