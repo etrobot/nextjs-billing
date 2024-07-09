@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import Tweet from '@/components/tweet';
 import type { NewArticle as Article } from '@/db/schema-sqlite';
 import { useInView } from 'react-intersection-observer';
-import Link from 'next/link';
 import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -98,7 +97,7 @@ function Notes({ userId }: { userId?: string }) {
   const handleBatchReply = async () => {
     setLoading(true);
     const title = selectedTweets.map(tweet => `to @${tweet.authorId}: ${tweet.title}`).join('<br>');
-    const content = selectedTweets.map(tweet => `<p><a href="${tweet.link}">@${tweet.authorId}:</a> ${tweet.content}</p>`).join('').replace('<br><br>','<br>');
+    const content = selectedTweets.map(tweet => `<p><strong><a href="${tweet.link}">@${tweet.authorId}:</a></strong> ${tweet.content}</p>`).join('');
     try {
       const res = await fetch('/api/batch', {
         method: 'POST',
@@ -124,7 +123,7 @@ function Notes({ userId }: { userId?: string }) {
 
   return (
     <>
-      <div className="flex justify-center p-2 gap-2 sticky top-0 bg-background">
+      <div className="flex justify-center p-3 gap-2 sticky top-0 bg-background">
         {['all', ...categories].map(cat => (
           <Button
             key={cat}
@@ -137,15 +136,15 @@ function Notes({ userId }: { userId?: string }) {
         ))}
       </div>
       {articles.length === 0 && <div className="flex h-[66vh] text-muted-foreground text-xl items-center justify-center py-10">No notes yet</div>}
-      <div className="flex flex-col justify-center items-center p-4 gap-12 w-full">
-        <div className="max-w-3xl sm:columns-1 md:columns-2 gap-4 mx-auto overflow-hidden relative transition-all">
+      <div className="flex flex-col justify-center items-center p-3 gap-12 w-full">
+        <div className="max-w-3xl sm:columns-1 md:columns-2 gap-2 mx-auto overflow-hidden relative transition-all">
           {articles.map((article) => (
-            <div className="mb-4 z-0 break-inside-avoid-column sm:w-full min-w-sm" key={article.id}>
+            <div className="mb-4 z-0 break-inside-avoid-column sm:w-full max-w-sm" key={article.id}>
               <div
-                className={`border ${selectedTweets.some(tweet => tweet.id === article.id) ? 'border-primary' : 'border-slate/10'} rounded-lg p-4 flex flex-col items-start gap-3 h-fit cursor-pointer`}
+                className={`border ${selectedTweets.some(tweet => tweet.id === article.id) ? 'border-primary' : 'border-slate/10'} rounded-lg p-3 flex flex-col items-start gap-2 h-fit cursor-pointer`}
                 onClick={() => toggleSelectTweet(article)}
               >
-                <Link className="hover:underline text-wrap break-words" href={`/note/${article.id}`}>🤖: {article.title.slice(0, 70) + '...'}</Link>
+                <a className="hover:underline text-wrap break-words" href={`/note/${article.id}`}>🤖: {article.title.slice(0, 70) + '...'}</a>
                 <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={280} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''} />
               </div>
             </div>
