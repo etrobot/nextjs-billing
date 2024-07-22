@@ -144,7 +144,7 @@ function Notes({ userId }: { userId?: string }) {
                 className={`border ${selectedTweets.some(tweet => tweet.id === article.id) ? 'border-primary' : 'border-slate/10'} rounded-lg p-3 flex flex-col items-start gap-2 h-fit`}
                 onClick={() => toggleSelectTweet(article)}
               >
-                <a className="hover:underline text-wrap break-words" href={`/note/${article.id}`}>🤖: {article.title.slice(0, 70) + '...'}</a>
+                <a className="hover:underline text-wrap break-words" href={`/note/${article.id}`}>🤖: {article.title.slice(0, 30) + '... '}<span className='text-muted-foreground ml-auto'> chat▸</span></a>
                 <div className='cursor-pointer'>
                 <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={280} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''} />
                 </div>
