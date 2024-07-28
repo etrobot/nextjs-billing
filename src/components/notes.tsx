@@ -9,7 +9,7 @@ import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 function Notes({ userId }: { userId?: string }) {
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [batches, setBatches] = useState<Article[][]>([]);
   const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [categories, setCategories] = useState<string[]>([]);
@@ -33,10 +33,7 @@ function Notes({ userId }: { userId?: string }) {
         return
       }
       const data: { articles: Article[]; nextCursor: string; hasMore: boolean } = await res.json();
-      setArticles(prev => {
-        const newArticles: Article[] = data.articles?.filter(article => !prev.some(a => a.id === article.id));
-        return [...prev, ...(newArticles ?? [])];
-      });
+      setBatches(prev => [...prev, data.articles]);
       setNextCursor(data.nextCursor);
       setHasMore(data.hasMore);
     } catch (error) {
@@ -66,7 +63,7 @@ function Notes({ userId }: { userId?: string }) {
 
   useEffect(() => {
     // Reset articles and cursor when category changes
-    setArticles([]);
+    setBatches([]);
     setNextCursor(undefined);
     setHasMore(true);
   }, [category]);
@@ -135,23 +132,25 @@ function Notes({ userId }: { userId?: string }) {
           </Button>
         ))}
       </div>
-      {articles.length === 0 && <div className="flex h-[66vh] text-muted-foreground text-xl items-center justify-center py-10">No notes yet</div>}
+      {batches.length === 0 && <div className="flex h-[66vh] text-muted-foreground text-xl items-center justify-center py-10">No notes yet</div>}
       <div className="flex flex-col justify-center items-center p-3 gap-12 w-full">
-        <div className="max-w-3xl sm:columns-1 md:columns-2 gap-2 mx-auto overflow-hidden relative transition-all">
-          {articles.map((article) => (
-            <div className="mb-4 z-0 break-inside-avoid-column sm:w-full max-w-sm" key={article.id}>
-              <div
-                className={`border ${selectedTweets.some(tweet => tweet.id === article.id) ? 'border-primary' : 'border-slate/10'} rounded-lg p-3 flex flex-col items-start gap-2 h-fit`}
-                onClick={() => toggleSelectTweet(article)}
-              >
-                <a className="hover:underline text-wrap break-words" href={`/note/${article.id}`}>🤖: {article.title.slice(0, 30) + '... '}<span className='text-muted-foreground ml-auto'> chat▸</span></a>
-                <div className='cursor-pointer'>
-                <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={280} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''} />
+        {batches.map((articles, batchIndex) => (
+          <div key={batchIndex} className="max-w-3xl sm:columns-1 md:columns-2 gap-2 mx-auto overflow-hidden relative transition-all">
+            {articles.map((article) => (
+              <div className="mb-4 z-0 break-inside-avoid-column sm:w-full max-w-sm" key={article.id}>
+                <div
+                  className={`border ${selectedTweets.some(tweet => tweet.id === article.id) ? 'border-primary' : 'border-slate/10'} rounded-lg p-3 flex flex-col items-start gap-2 h-fit`}
+                  onClick={() => toggleSelectTweet(article)}
+                >
+                  <a className="hover:underline text-wrap break-words" href={`/note/${article.id}`}>🤖: {article.title.slice(0, 70) + '...'}</a>
+                  <div className='cursor-pointer'>
+                  <Tweet noteId={article.id?.toString() ?? ''} cate={article.category} length={280} css={article.css ?? ''} authorId={article.authorId} content={article.content} createdAt={article.createdAt?.toString() ?? ''} />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ))}
         {hasMore && <div ref={ref} className="h-1" />}
       </div>
       {selectedTweets.length > 0 && (

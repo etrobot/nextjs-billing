@@ -7,7 +7,7 @@ import { SessionProvider } from 'next-auth/react';
 import Navbar from '@/components/navbar';
 import Image from "next/image";
 export const metadata: Metadata = {
-  title: "Inspilot",
+  title: "subx.fun",
 };
 import { GoogleTagManager,GoogleAnalytics } from '@next/third-parties/google'
 
@@ -42,7 +42,7 @@ export default function RootLayout({
             <div className="flex justify-center my-2">
             <Image src="/icon.png" alt="Icon" width={40} height={40}/>
             <h1 className='mx-1 title font-extrabold text-3xl tracking-tight'>
-                INSPILOT
+                SUBXFUN
             </h1>
             </div>
 
