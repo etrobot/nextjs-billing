@@ -183,13 +183,13 @@ const Coding: React.FC = () => {
       </div>
       <div className="flex-1 overflow-y-auto mb-20 p-2">
         {messages.map((message, index) => (
+          message.role === 'user' && 
           <div className="w-full flex" key={index}>
             <span
-              className={`${
-                message.role === 'user'
-                  ? 'ml-auto bg-blue-500 bg-opacity-20 rounded-md my-2 p-2 max-w-xs'
-                  : ''
-              }`}
+              className='ml-auto bg-blue-500 bg-opacity-20 rounded-md my-2 p-2 max-w-xs'
+              dangerouslySetInnerHTML={{
+                __html:message.content,
+              }}
             />
           </div>
         ))}
