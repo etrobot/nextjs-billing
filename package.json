@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.8.0",
+    "@codesandbox/sandpack-react": "^2.18.2",
     "@lemonsqueezy/lemonsqueezy.js": "^2.2.0",
     "@lemonsqueezy/wedges": "^1.2.2",
     "@libsql/client": "^0.6.0",
@@ -37,6 +38,7 @@
     "next": "14.2.4",
     "next-auth": "5.0.0-beta.15",
     "next-themes": "^0.3.0",
+    "node-fetch": "^3.3.2",
     "openai": "^4.47.3",
     "optional": "^0.1.4",
     "pg": "^8.11.3",

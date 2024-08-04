@@ -42,7 +42,7 @@ export default function RootLayout({
             <div className="flex justify-center my-2">
             <Image src="/icon.png" alt="Icon" width={40} height={40}/>
             <h1 className='mx-1 title font-extrabold text-3xl tracking-tight'>
-                SUBXFUN
+                INSPILOT
             </h1>
             </div>
 
