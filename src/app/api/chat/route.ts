@@ -6,7 +6,6 @@ import { eq } from 'drizzle-orm';
 import { type Subscription } from "@lemonsqueezy/lemonsqueezy.js";
 import {
   db,
-  plans,
   subscriptions,
   type NewSubscription,
 } from "@/db/schema";

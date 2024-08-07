@@ -21,24 +21,19 @@ export default function Home() {
     if (isValidUrl(inputValue)) {
       router.push(`/link/${encodeURIComponent(inputValue)}`);
     } else {
-      toast.error('请输入有效的 URL！');
+      toast.error('Please input a valid URL！');
     }
   };
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh', paddingBottom: '80px' }}>
-      <h1>Welcome to the URL Generator</h1>
 
-      {/* React Hot Toast */}
-      <Toaster />
-
-      {/* Input and Button */}
       <div style={{ position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', display: 'flex' }}>
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="请输入URL"
+          placeholder="Please input a URL"
           style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', marginRight: '10px' }}
         />
         <button
