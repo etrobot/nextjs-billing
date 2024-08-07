@@ -1,15 +1,53 @@
-import { Suspense } from 'react'
-import Notes from '@/components/notes'
+'use client';
 
-export default async  function Home() {
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import toast, { Toaster } from 'react-hot-toast';
+
+export default function Home() {
+  const [inputValue, setInputValue] = useState('');
+  const router = useRouter();
+
+  const isValidUrl = (string: string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const handleGenerate = () => {
+    if (isValidUrl(inputValue)) {
+      router.push(`/link/${encodeURIComponent(inputValue)}`);
+    } else {
+      toast.error('请输入有效的 URL！');
+    }
+  };
+
   return (
-    <>
-      <h1 className='pb-2 title w-full text-center font-extrabold text-4xl  lg:text-6xl tracking-tight text-center mx-auto'>
-      Batch Reply with AI<br />
-      </h1>
-    <Suspense>
-      <Notes />
-    </Suspense>
-    </>
-  )
+    <div style={{ position: 'relative', minHeight: '100vh', paddingBottom: '80px' }}>
+      <h1>Welcome to the URL Generator</h1>
+
+      {/* React Hot Toast */}
+      <Toaster />
+
+      {/* Input and Button */}
+      <div style={{ position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', display: 'flex' }}>
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="请输入URL"
+          style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', marginRight: '10px' }}
+        />
+        <button
+          onClick={handleGenerate}
+          style={{ padding: '10px 20px', borderRadius: '4px', background: '#0070f3', color: '#fff', border: 'none' }}
+        >
+          Generate
+        </button>
+      </div>
+    </div>
+  );
 }
