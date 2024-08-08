@@ -1,9 +1,10 @@
 'use client';
 
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import React, { useEffect, useState, useCallback } from 'react';
-import { Message } from '@/components/coding';
+import Coding, { Message } from '@/components/coding';
 import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 
 interface BrowserProps {
   url: string;
@@ -25,8 +26,8 @@ const fetchData = async (url: string) => {
 };
 
 const Browser = ({ url }: BrowserProps) => {
-  const [reply, setReply] = useState<string>('');
-  const [msg, setMsg] = useState<Message[]>([]);
+  const [reply, setReply] = useState<string | undefined>('');
+  const [msg, setMsg] = useState<Message[] | undefined>(undefined);
 
   const handleSendMessage = useCallback(async (text: string) => {
     try {
@@ -62,6 +63,7 @@ const Browser = ({ url }: BrowserProps) => {
                 assistantReply += parsedMessage.choices[0].delta.content ?? '';
                 setReply(assistantReply);
                 if (parsedMessage.choices[0].finish_reason === 'stop') {
+                  setMsg([{ role: 'user', content: assistantReply }]);
                   break;
                 }
               } catch (e: any) {
@@ -77,7 +79,7 @@ const Browser = ({ url }: BrowserProps) => {
         toast.error(`Fetch error ${error.message}`);
       }
     }
-  }, []);
+  },[]);
 
   useEffect(() => {
     fetchData(url).then((data) => {
@@ -85,17 +87,27 @@ const Browser = ({ url }: BrowserProps) => {
     });
   }, [url, handleSendMessage]);
 
+  const handleConfirm = () => {
+    setReply(undefined);
+  };
+
   return (
     <div className='w-full'>
-      <Toaster />
       {reply === '' && <p className='w-full text-center mt-2'>Reading URL ...</p>}
-      <div>
-        <Textarea
-          className="w-full m-8 h-[500px]"
-          value={reply}
-          onChange={(e) => setReply(e.target.value)}
-        />
-      </div>
+      {reply !== undefined && 
+            <div>
+                <Textarea
+                className="w-full m-8 h-[500px]"
+                value={reply}
+                onChange={(e) => setReply(e.target.value)}
+                />
+            </div>
+
+       }
+        {reply !== undefined && msg && <div className='flex justify-center'>
+                    <Button variant='outline' onClick={handleConfirm}>Confirm</Button>
+                </div>}
+      {reply === undefined && msg && <Coding initialMessages={msg}/>}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { Providers } from '@/components/providers';
 import { SessionProvider } from 'next-auth/react';
 import Navbar from '@/components/navbar';
 import Image from "next/image";
+import { Toaster } from "react-hot-toast";
 export const metadata: Metadata = {
   title: "subx.fun",
 };
@@ -39,6 +40,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Navbar />
+            <Toaster />
             <div className="flex justify-center my-2">
             <Image src="/icon.png" alt="Icon" width={40} height={40}/>
             <h1 className='mx-1 title font-extrabold text-3xl tracking-tight'>

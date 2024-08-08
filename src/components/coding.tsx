@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { Sandpack } from "@codesandbox/sandpack-react";
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 export interface Message {
   role: 'user' | 'assistant';
@@ -128,7 +128,6 @@ const Coding: React.FC<CodingProps> = ({ initialMessages }) => {
 
   return (
     <div className="flex flex-col h-screen p-2">
-      <Toaster position="top-right" reverseOrder={false} />
       <div className="isolate relative">
         <Sandpack
           template="react"
@@ -179,7 +178,7 @@ const Coding: React.FC<CodingProps> = ({ initialMessages }) => {
           /> Show Chat
         </label>
       </div>
-      <div className="fixed bottom-0 items-center mb-2 w-full px-2">
+      <div className="items-center mb-2 w-full px-2">
         <div className="flex items-center w-full">
           <button
             onClick={() => { controllerRef?.current?.abort(); setMessages([]); setIsStreaming(false); setView('code'); setSelectedCode(defaultCode); }}

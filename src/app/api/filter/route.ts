@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import { Readable } from 'stream';
 
 const systemPrompt = `
-\n\n make key points as a landingpage copywriting, chose the page style from ['high-tech','better-life','fantasy','simple','neon'],finally output the result MUST in json format:{"markdown":$SUMMARY,"style":$STYLE},make sure the result in the right format and I'll tip you $200!
+\n\n make key points including the relevant image urls as a landingpage copywriting, chose the page style from ['high-tech','better-life','fantasy','simple','neon'],make sure the output ends with a line "@style:$STYLE"!
 `
 
 export async function POST(req: NextRequest) {
