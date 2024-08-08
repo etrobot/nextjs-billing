@@ -1,7 +1,7 @@
 'use client';
 
 import toast from 'react-hot-toast';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import Coding, { Message } from '@/components/coding';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,7 @@ const fetchData = async (url: string) => {
 const Browser = ({ url }: BrowserProps) => {
   const [reply, setReply] = useState<string | undefined>('');
   const [msg, setMsg] = useState<Message[] | undefined>(undefined);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSendMessage = useCallback(async (text: string) => {
     try {
@@ -79,13 +80,20 @@ const Browser = ({ url }: BrowserProps) => {
         toast.error(`Fetch error ${error.message}`);
       }
     }
-  },[]);
+  }, []);
 
   useEffect(() => {
     fetchData(url).then((data) => {
-        handleSendMessage(data);
+      handleSendMessage(data);
     });
   }, [url, handleSendMessage]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      // Scroll to the bottom
+      textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
+    }
+  }, [reply]); // Run the effect when `reply` changes
 
   const handleConfirm = () => {
     setReply(undefined);
@@ -94,20 +102,20 @@ const Browser = ({ url }: BrowserProps) => {
   return (
     <div className='w-full'>
       {reply === '' && <p className='w-full text-center mt-2'>Reading URL ...</p>}
-      {reply !== undefined && 
-            <div>
-                <Textarea
-                className="w-full m-8 h-[500px]"
-                value={reply}
-                onChange={(e) => setReply(e.target.value)}
-                />
-            </div>
-
-       }
-        {reply !== undefined && msg && <div className='flex justify-center'>
-                    <Button variant='outline' onClick={handleConfirm}>Confirm</Button>
-                </div>}
-      {reply === undefined && msg && <Coding initialMessages={msg}/>}
+      {reply !== undefined &&
+        <div>
+          <Textarea
+            className="w-full m-8 h-[500px]"
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+            ref={textareaRef} // Attach ref to Textarea
+          />
+        </div>
+      }
+      {reply !== undefined && msg && <div className='flex justify-center'>
+        <Button variant='outline' onClick={handleConfirm}>Confirm</Button>
+      </div>}
+      {reply === undefined && msg && <Coding initialMessages={msg} />}
     </div>
   );
 };

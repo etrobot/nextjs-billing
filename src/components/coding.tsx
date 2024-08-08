@@ -27,6 +27,7 @@ const Coding: React.FC<CodingProps> = ({ initialMessages }) => {
   const [language, setLanguage] = useState<'jsx' | 'js' | 'html' | 'tsx'>('jsx');
   const [view, setView] = useState<'chat' | 'code'>('code');
   const controllerRef = useRef<AbortController | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null); // 用于消息滚动
 
   const containCode = (content: string): boolean => {
     return content.includes('import') && content.includes('export default')
@@ -59,7 +60,7 @@ const Coding: React.FC<CodingProps> = ({ initialMessages }) => {
           const { done, value } = await reader.read();
           if (done) break;
           buffer += textDecoder.decode(value, { stream: true });
-
+          messagesEndRef?.current?.scrollIntoView({ behavior: 'auto' })
           const lines = buffer.split('\n');
           buffer = lines.pop() || '';
           for (const line of lines) {
@@ -77,8 +78,7 @@ const Coding: React.FC<CodingProps> = ({ initialMessages }) => {
                   break;
                 }
               } catch (e) {
-                toast.error('Error parsing JSON');
-                console.error('Error parsing JSON:', e);
+                toast.error(`Error parsing JSON response: ${e}`);
               }
             }
           }
@@ -89,8 +89,7 @@ const Coding: React.FC<CodingProps> = ({ initialMessages }) => {
       if (containCode(reply)) setSelectedCode(extractCodeSnippets(reply)[0].code);
     } catch (error: any) {
       if (error.name !== 'AbortError') {
-        toast.error('Fetch error');
-        console.error('Fetch error:', error);
+        toast.error(`Fetch error ${error.name}: ${error.message}`);
       }
       setIsStreaming(false);
     }
@@ -155,10 +154,11 @@ const Coding: React.FC<CodingProps> = ({ initialMessages }) => {
                   className={message.role === 'user' ? 'ml-auto bg-blue-500 rounded-sm p-2 max-w-md ' : `bg-zinc-700 rounded-sm my-2 p-2 cursor-pointer ${containCode(message.content) ? 'hover:underline' : ''}`}
                   onClick={() => handleCodeSelection(index)}
                 >
-                {containCode(message.content) ? `📟 Code Snippet ${(index + 1) / 2}` : `${message.content}`}
+                  {containCode(message.content) ? `📟 Code Snippet ${(index + 1) / 2}` : `${message.content}`}
                 </div>
               </div>
             ))}
+            <div ref={messagesEndRef} /> {/* 滚动定位到这里 */}
           </div>
         )}
         {isStreaming && (
